@@ -1,0 +1,59 @@
+/* start main rules */
+body{
+    background-color: #f4f4f4;
+}
+
+/*end main rules */
+/* start login form */
+.login{
+    min-width: 300px;
+    max-width: 500px;
+    margin: 100px auto;
+}
+.login h4{
+    text-align: center;
+    color: #888;
+    
+}
+.login input{
+    margin-bottom: 10px;
+}
+/* End login form */
+
+
+/* this replace bootstrap */
+
+.form-control{
+    background-color: #EAEAEA;
+    display: block;
+    height: 50px;
+    outline: none;
+    border: none;
+    width: 100%;
+    border-top-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    box-shadow: 1px 0px 3px rgba(0,0,0,.1);
+    transition: all .5s ease-in-out;
+
+}
+.form-btn{
+   height: 50px;
+   width: 100%;
+   border-radius: 10px;
+   color: #fff;
+   background-color: #008DDE;
+   font-size: 18px;
+   border: none;
+   cursor: pointer;
+   outline: none;
+   transition: all .5s ease-in-out;
+}
+.form-btn:hover{
+   opacity: .5;
+}
+.form-control:focus{
+    border-radius: 0;
+    border-top-left-radius: 16px;
+    border-bottom-right-radius:  16px;
+    border-bottom: 1px solid #f00;
+}
