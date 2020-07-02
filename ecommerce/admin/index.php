@@ -1,8 +1,12 @@
 <?php 
+       session_start();
+       $noNavbar = 'yes';
+       if(isset($_SESSION['username'])){
+              header('Location: dashboard.php'); // redirect to dashboard
+       }
        include 'init.php';
-       include $template . "header.php";
-       include 'includes/languages/english.php';
-
+        //display a message error if user does not exist
+        $msgErr = "";
        // check if user coming from HTTP POST REQUEST 
        if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $username = $_POST['username'];
@@ -17,7 +21,11 @@
             $count = $statement -> rowCount();
             //if count > 0 means that db contain record about this user
             if($count > 0){
-                       echo 'Welcome ' . $username;
+                 $_SESSION['username'] = $username; // register session username
+                 header('Location: dashboard.php'); // redirect to dashboard
+                 exit();   // exit the script
+            }else{
+              $msgErr = 'username/password is not valid';
             }
 
        }else{
@@ -46,10 +54,18 @@
                            name="password" 
                            v-bind:placeholder=" placeholderB" 
                            autocomplete="new-password">
-
+                    <div style="   padding: 5px;
+                                   margin: 10px 0;
+                                   color: #f00;
+                                   font-size: 20px;
+                                   text-align: center;">
+                                   <?php echo $msgErr;?>
+                     </div> 
                     <input class="form-btn" type="submit" value="Log In">
              </form>
            </div>
         </section>
       </main>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="<?php echo $js ; ?>login.js"></script>
 <?php include $template . "footer.php"; ?>

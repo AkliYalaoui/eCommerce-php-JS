@@ -7,6 +7,3 @@
     <link rel="stylesheet" href="<?php echo $css ; ?>style.css" />
     <link rel="stylesheet" href="<?php echo $css ; ?>all.css" />
 <body>
-    <header>
-    
-   </header>
