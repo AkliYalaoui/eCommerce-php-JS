@@ -16,13 +16,25 @@
             $hashedPass = sha1($password);  // echo $password.' | '. $hashedPass ;
 
             //check if the user exists in the database
-            $query = "SELECT username,password FROM users WHERE username = ? AND password = ? AND groupeid = ?";
+            $query = " SELECT
+                             userid,username,password 
+                       FROM
+                              users
+                       WHERE 
+                              username = ? 
+                       AND 
+                              password = ? 
+                       AND
+                              groupeid = ?
+                       LIMIT   1";
             $statement = $con->prepare($query);
             $statement->execute(array($username,$hashedPass,1));
+            $row   = $statement->fetch();
             $count = $statement -> rowCount();
             //if count > 0 means that db contain record about this user
             if($count > 0){
                  $_SESSION['username'] = $username; // register session username
+                 $_SESSION['id']       = $row['userid'];  // register session id        
                  header('Location: dashboard.php'); // redirect to dashboard
                  exit();   // exit the script
             }else{

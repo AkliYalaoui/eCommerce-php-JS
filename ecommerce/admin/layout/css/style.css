@@ -118,7 +118,67 @@ header{
 
 }
 /* end navigation menu */
+/* start members edit page */
 
+.edit-title{
+    text-align: center;
+    margin: 40px 0;
+    font-weight: bold;
+    font-size: 55px;
+    color: #666;
+}
+.container form{
+    max-width: 700px;
+    min-width: 300px;
+    margin: 0 auto;
+}
+.form-groupe{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0 5% 20px; 
+    width: 90%;
+}
+.form-groupe label{
+   margin-right: 25px;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    padding: 5px;
+}
+.form-groupe input{
+    height: 40px;
+    min-width: 200px;
+    width: 80%;
+    border: none;
+    outline: none;
+    box-shadow: 3px 3px 6px rgba(0,0,0,.1),
+                -3px -3px 6px rgba(0,0,0,.1);
+    transition: all 1s ease-in-out;          
+}
+.form-groupe:nth-of-type(3) input{
+   margin-left: 30px;
+}
+.form-groupe input:focus{
+    border-bottom: 1px solid #3498DB;
+}
+.form-groupe .form-save{
+    background-color: #3498DB;
+    color: #fff;
+    font-size: 20px;
+    height: 50px;
+    min-width: 80px;
+    max-width: 150px ;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 1s ease-in-out;
+}
+.form-groupe .form-save:hover{
+     color: #3498DB; 
+     background-color: #fff; 
+     border-radius: 10px; 
+}
+/* start members edit page */
 /* start media for tablette */
 @media screen and (max-width : 768px){
      header{
