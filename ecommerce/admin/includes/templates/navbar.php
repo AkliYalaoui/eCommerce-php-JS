@@ -21,7 +21,7 @@
                 <ul ref="ulSlide">
                     <li><a href="#"><?php echo lang('editprofile'); ?></a></li>
                     <li><a href="#"><?php echo lang('setting'); ?></a></li>
-                    <li><a href="#"><?php echo lang('logout'); ?></a></li>
+                    <li><a href="logout.php"><?php echo lang('logout'); ?></a></li>
                 </ul> 
             </div>
     </nav>  
