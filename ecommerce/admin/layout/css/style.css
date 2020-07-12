@@ -114,7 +114,7 @@ header{
     width: 100%;
     min-width: 300px;
     background-color: rgba(22, 20, 20, 1);
-    height: 70px;
+    height: 70px !important;
 }
 .nav-bar{
    width: 100%;
@@ -141,6 +141,7 @@ header{
 }
 .nav-brand a{
     font-size: 20px;
+    opacity: 1;
 }
 .nav-brand .active{
     display: none;
@@ -148,6 +149,7 @@ header{
 .nav-list{
    list-style: none;
    grid-column: 2/8;
+   display: block ;
 }
 .nav-list > li{
     display: inline-block;
@@ -161,7 +163,7 @@ header{
     background-color: #3498DB; 
     min-height: 70px;
     width: 150px;
-    display:flex;
+    display:flex ;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
@@ -196,6 +198,11 @@ header{
 }
 .sub-nav > ul li{
     display: inline-block;
+    width: 100%;
+    padding: 10px;
+}
+.sub-nav > ul li:hover{
+    background-color: #a5c2d6;
 }
 .sub-nav > ul a{
    font-size: 18px;
@@ -266,11 +273,9 @@ header{
 /* start members edit page */
 /* start media for tablette */
 @media screen and (max-width : 768px){
-    body{
-        background-color: #00B0FF;
-    }
     main{
-       display: block; 
+       display: block;
+       background-color: #00B0FF; 
     }
     .login{
         min-width: 400px;
@@ -293,9 +298,6 @@ header{
     section:nth-of-type(2){
         display: none;
    }
-     header{
-        height: auto;
-     }
      .nav-bar{
          display:flex;
          flex-direction: column;
@@ -325,6 +327,14 @@ header{
          align-items: center;
          width: 100%;
          background-color: rgba(22, 20, 20, 1);
+     }
+     .nav-list li{
+         width: 100%;
+         padding: 20px;
+         text-align: center;
+     }
+     .nav-list li:hover{
+        background-color: #a5c2d6;
      }
      .sub-nav{
          width: 100%;

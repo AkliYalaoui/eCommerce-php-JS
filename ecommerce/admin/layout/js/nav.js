@@ -16,3 +16,14 @@ subNav.onclick = function(){
     ulSlide.style.display = isHidden ? 'flex':'none';
     isHidden = !isHidden;
 }
+
+window.onresize = function(){
+    
+    if(window.innerWidth > 768){
+        menuBarOne.style.display = 'block';
+        menuBarTwo.style.display = 'flex';
+    }else{
+        menuBarOne.style.display = 'none';
+        menuBarTwo.style.display = 'none';
+    }
+}
