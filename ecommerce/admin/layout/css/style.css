@@ -6,23 +6,108 @@
 }
 body{
     background-color: #f4f4f4;
+    height: 100vh;
+    display: flex;
 }
-
+main{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 2fr;
+}
 /*end main rules */
+
+/* start welcome message animation*/
+section:first-of-type{
+    width:100%;
+    background-color: #00B0FF;
+    min-width: 400px;
+    grid-column: 1/3;
+}
+section:first-of-type p{
+    width: 50%;
+    margin: 50px auto;
+    line-height: 1.5;
+    letter-spacing: 2px;
+    color: #ddd;
+    font-size: 30px;
+    text-align: justify;
+    font-weight: bold;
+}
+/* end welcome message animation*/
+
+/* start welcome picture */
+section:nth-of-type(2) {
+    width: 80%;
+    margin-top: 30px;
+}
+ section:nth-of-type(2) img{
+   width: 100%;
+ }
+/* end welcome welcome picture*/
+
 /* start login form */
+.form-group{
+    position: relative;
+}
+.form-group:not(:last-of-type) i{
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    color: #666;
+}
+.form-group:last-of-type i{
+    color: #FFF;
+    position: absolute;
+    top: 15px;
+    left: 60%;
+}
 .login{
-    min-width: 300px;
-    max-width: 500px;
-    margin: 100px auto;
+    width: 60%;
+    margin: 30px 15% 30px 25%
 }
 .login h4{
     text-align: center;
-    color: #888;
-    
+    font-size: 35px;
+    margin-bottom: 30px;
+    color: #555;  
 }
-.login input{
-    margin-bottom: 10px;
+.form-control{
+    background-color: #FFF;
+    display: block;
+    height: 50px;
+    outline: none;
+    border: none;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px 30px;
+    box-shadow: 3px 3px 4px rgba(0,0,0,.15),
+               -3px -3px 4px rgba(0,0,0,.15);
+    transition: all .5s ease-in-out;
+
 }
+.form-btn{
+   display: block; 
+   height: 50px;
+   width: 100%;
+   border-radius: 7px;
+   margin: auto;
+   color: #fff;
+   background-color: #00B0FF;
+   font-size: 18px;
+   border: none;
+   cursor: pointer;
+   outline: none;
+   transition: all .5s ease-in-out;
+}
+.form-btn:hover{
+   opacity: .5;
+}
+.form-control:focus{
+    border: 1px solid #11a2f7;
+}
+
 /* End login form */
 /*  start navigation menu */
 header{
@@ -181,6 +266,33 @@ header{
 /* start members edit page */
 /* start media for tablette */
 @media screen and (max-width : 768px){
+    body{
+        background-color: #00B0FF;
+    }
+    main{
+       display: block; 
+    }
+    .login{
+        min-width: 400px;
+        margin: 150px auto;
+        padding: 10px;
+    }
+    .login h4{
+         color: #FFF;   
+    }
+    .form-group:last-of-type i{
+        color: #00B0FF;
+    }
+    .form-btn{
+       background-color: #FFF;
+       color: #00B0FF;
+    }
+    section:first-of-type{
+        display: none;
+    }
+    section:nth-of-type(2){
+        display: none;
+   }
      header{
         height: auto;
      }
@@ -225,39 +337,23 @@ header{
 }
 
 /* end media for tablette */
-/* this replace bootstrap */
+/* start media for large secreen */
+@media screen and (max-width: 986px) and (min-width: 769px){
 
-.form-control{
-    background-color: #EAEAEA;
-    display: block;
-    height: 50px;
-    outline: none;
-    border: none;
-    width: 100%;
-    border-top-right-radius: 16px;
-    border-bottom-left-radius: 16px;
-    box-shadow: 1px 0px 3px rgba(0,0,0,.1);
-    transition: all .5s ease-in-out;
+    section:first-of-type p{
+        width: 90%;
+        margin: 30px auto;
+        line-height: 1.2;
+        letter-spacing: 1px;
+        font-size: 26px;;
+    }
+    section:nth-of-type(2) {
+        width: 90%;
+    }
+    .login{
+        width: 90%;
+        margin: 30px 4% 30px 6%;
+    }
+}
 
-}
-.form-btn{
-   height: 50px;
-   width: 100%;
-   border-radius: 10px;
-   color: #fff;
-   background-color: #008DDE;
-   font-size: 18px;
-   border: none;
-   cursor: pointer;
-   outline: none;
-   transition: all .5s ease-in-out;
-}
-.form-btn:hover{
-   opacity: .5;
-}
-.form-control:focus{
-    border-radius: 0;
-    border-top-left-radius: 16px;
-    border-bottom-right-radius:  16px;
-    border-bottom: 1px solid #f00;
-}
+/* end media for large secreen */

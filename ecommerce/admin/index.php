@@ -41,32 +41,34 @@
               $msgErr = 'username/password is not valid';
             }
 
-       }else{
-
        }
  ?>
 
     <main>
-         
+        <section> <p></p> </section>
+        <section> <img src="./layout/images/login.svg" alt="login"> </section>
         <section class="login">
-          <div id="app-login"> 
               <h4>Admin Login</h4>
               <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-                    <input v-on:focus="placeHolderHider('A')"
-                           v-on:blur="placeHolderShower('A')"
-                           class="form-control"
+                   <div class="form-group">
+                    <input 
+                          class="form-control"
                            type="text"
                            name="username"
-                           v-bind:placeholder="placeholderA"
+                           placeholder="Username"
                            autocomplete="off">
-
-                    <input v-on:focus="placeHolderHider('B')" 
-                           v-on:blur="placeHolderShower('B')"
+                      <i class="fa fa-user fa-fw"></i>     
+                  </div> 
+                  <div class="form-group">
+                    <input
                            class="form-control" 
                            type="password" 
                            name="password" 
-                           v-bind:placeholder=" placeholderB" 
+                           placeholder="Password" 
                            autocomplete="new-password">
+                       <i class="fa fa-key fa-fw"></i>    
+                  </div>
+
                     <div style="   padding: 5px;
                                    margin: 10px 0;
                                    color: #f00;
@@ -74,11 +76,11 @@
                                    text-align: center;">
                                    <?php echo $msgErr;?>
                      </div> 
-                    <input class="form-btn" type="submit" value="Log In">
+                     <div class="form-group">
+                       <input class="form-btn" type="submit" value="Log In">
+                       <i class="fa fa-door-open fa-fw"></i>
+                     </div>
              </form>
-           </div>
         </section>
       </main>
-      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-      <script src="<?php echo $js ; ?>login.js"></script>
 <?php include $template . "footer.php"; ?>

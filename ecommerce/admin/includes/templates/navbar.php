@@ -27,5 +27,3 @@
     </nav>  
   </div>    
 </header>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="<?php echo $js ; ?>nav.js"></script>
