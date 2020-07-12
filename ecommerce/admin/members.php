@@ -47,7 +47,8 @@
                     <!-- start password field -->
                     <div class="form-groupe">
                         <label>Password</label>
-                        <input type="password" name="password" autocomplete="new-password">
+                        <input type="password" name="newpassword" autocomplete="new-password">
+                        <input type="hidden" name="oldpassword" value="<?php echo $row['password']; ?>" autocomplete="new-password">
                     </div>
                     <!-- start email field -->
                     <div class="form-groupe">
@@ -80,10 +81,13 @@
                     $username =$_POST['username'];
                     $email =$_POST['email'];
                     $full =$_POST['full'];
+                    $Newpassword =  empty($_POST['newpassword']) ? $_POST['oldpassword']: sha1($_POST['newpassword']);
+                    //validate the form
+                    
              // update the database
-             $query = 'UPDATE users SET username=?,email=?,fullname=? WHERE userid=?';
+             $query = 'UPDATE users SET username=?,password=?,email=?,fullname=? WHERE userid=?';
              $stmt = $con->prepare($query);
-             $stmt->execute(array($username,$email,$full,$id));
+             $stmt->execute(array($username,$Newpassword,$email,$full,$id));
                 //echo succes message
                 echo '<h2 style="text-align:center;color:#0F0;">'.$stmt->rowCount().' record updated</h2><br/>';
             }else{
