@@ -83,4 +83,5 @@
              </form>
         </section>
       </main>
+      <script src="<?php echo $js ; ?>login.js"></script>
 <?php include $template . "footer.php"; ?>

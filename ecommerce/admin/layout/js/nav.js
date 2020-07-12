@@ -1,20 +1,18 @@
 // navigation menu
+var menu = document.getElementById('menu'),
+    menuBarOne = document.getElementById('menuBarOne'),
+    menuBarTwo = document.getElementById('menuBarTwo'),
+    ulSlide = document.getElementById('ulSlide'),
+    subNav = document.getElementById('subNav'),
+    DoIt = true,
+    isHidden = true;
 
-// new Vue({
-//     el:'#app-nav',
-//     data :{
-//        isHidden : true,
-//        menu : true
-//     },
-//     methods:{
-//        showHide : function(){
-//           this.$refs.ulSlide.style.display = this.isHidden ? 'flex':'none';
-//           this.isHidden = !this.isHidden;
-//        },
-//        showmenu :function(){
-//         this.$refs.menu_barA.style.display = this.menu ? 'flex':'none';
-//         this.$refs.menu_barB.style.display = this.menu ? 'flex':'none';
-//         this.menu = !this.menu;
-//        }
-//     }
-//   });
+menu.onclick = function(){
+    menuBarOne.style.display = DoIt ? 'flex':'none';
+    menuBarTwo.style.display = DoIt ? 'flex':'none';
+    DoIt = !DoIt;
+}
+subNav.onclick = function(){
+    ulSlide.style.display = isHidden ? 'flex':'none';
+    isHidden = !isHidden;
+}
