@@ -7,7 +7,6 @@
 body{
     background-color: #f4f4f4;
     height: 100vh;
-    display: flex;
 }
 main{
     width: 100%;
@@ -211,7 +210,10 @@ header{
 }
 /* end navigation menu */
 /* start members edit page */
-
+.container{
+    margin-top: 50px;
+    position: relative;
+}
 .edit-title{
     text-align: center;
     margin: 40px 0;
@@ -221,7 +223,7 @@ header{
 }
 .container form{
     max-width: 700px;
-    min-width: 300px;
+    min-width: 400px;
     margin: 0 auto;
 }
 .form-groupe{
@@ -239,10 +241,11 @@ header{
     padding: 5px;
 }
 .form-groupe input{
-    height: 40px;
+    height: 50px;
     min-width: 200px;
     width: 80%;
     border: none;
+    padding: 20px;
     outline: none;
     box-shadow: 3px 3px 6px rgba(0,0,0,.1),
                 -3px -3px 6px rgba(0,0,0,.1);
@@ -258,6 +261,7 @@ header{
     background-color: #3498DB;
     color: #fff;
     font-size: 20px;
+    padding: 10px;
     height: 50px;
     min-width: 80px;
     max-width: 150px ;
@@ -276,10 +280,15 @@ header{
     main{
        display: block;
        background-color: #00B0FF; 
+       position: relative;
     }
     .login{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
         min-width: 400px;
-        margin: 150px auto;
+        margin: 0px auto;
         padding: 10px;
     }
     .login h4{
