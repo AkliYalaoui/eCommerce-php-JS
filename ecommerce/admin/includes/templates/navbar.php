@@ -7,8 +7,8 @@
             </span>
         </div>
             <ul class="nav-list" id="menuBarOne">
-                <li><a href="categories.php"><?php echo lang('catergories'); ?></a></li>
-                <li><a href="#"><?php echo lang('items'); ?></a></li>
+                <li><a href="categories.php"><?php echo lang('categories'); ?></a></li>
+                <li><a href="items.php"><?php echo lang('items'); ?></a></li>
                 <li><a href="members.php"><?php echo lang('members'); ?></a></li>
                 <li><a href="#"><?php echo lang('statistics'); ?></a></li>
                 <li><a href="#"><?php echo lang('logs'); ?></a></li>

@@ -45,7 +45,8 @@ for(num of numberInputs){
 var fullView =  document.querySelectorAll('details.full-view');
 var classic = document.getElementById('classic');
 var full = document.getElementById('full');
-classic.onclick = function(){
+if(classic !== null){
+  classic.onclick = function(){
     for(detail of fullView){
       if(detail.hasAttribute('open')){
         detail.removeAttribute('open');
@@ -54,12 +55,15 @@ classic.onclick = function(){
     this.classList.add('active');
     full.classList.remove('active');
 };
-full.onclick = function(){
-  for(detail of fullView){
-    if(!detail.hasAttribute('open')){
-      detail.setAttribute('open','');
+}
+if(full !== null){
+  full.onclick = function(){
+    for(detail of fullView){
+      if(!detail.hasAttribute('open')){
+        detail.setAttribute('open','');
+      }
     }
-  }
-  this.classList.add('active');
-  classic.classList.remove('active');
-};
+    this.classList.add('active');
+    classic.classList.remove('active');
+  };
+}

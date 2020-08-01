@@ -293,6 +293,12 @@ header{
     box-shadow: 3px 3px 6px rgba(0,0,0,.1),
                 -3px -3px 6px rgba(0,0,0,.1);       
 }
+.form-groupe select{
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    border: 1px solid #ccc;
+}
 .form-groupe textarea{
     min-width: 200px;
     width: 100%;

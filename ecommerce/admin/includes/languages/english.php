@@ -4,7 +4,7 @@
       static $lang = array(
             //dashboard
             'home'         => 'Home',
-            'catergories'   => 'Catergories',
+            'categories'   => 'Categories',
             'items'        => 'Items',
             'members'      => 'Members',
             'statistics'   => 'Statistics',
