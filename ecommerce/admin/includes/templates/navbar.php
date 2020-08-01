@@ -1,15 +1,15 @@
 <header>
      <nav class="nav-bar">
         <div class="nav-brand">
-            <a href="#"><?php echo lang('home'); ?></a>
+            <a href="dashboard.php"><?php echo lang('home'); ?></a>
             <span id="menu"
                  class="fa fa-bars active">
             </span>
         </div>
             <ul class="nav-list" id="menuBarOne">
-                <li><a href="#"><?php echo lang('catergorie'); ?></a></li>
+                <li><a href="categories.php"><?php echo lang('catergories'); ?></a></li>
                 <li><a href="#"><?php echo lang('items'); ?></a></li>
-                <li><a href="#"><?php echo lang('members'); ?></a></li>
+                <li><a href="members.php"><?php echo lang('members'); ?></a></li>
                 <li><a href="#"><?php echo lang('statistics'); ?></a></li>
                 <li><a href="#"><?php echo lang('logs'); ?></a></li>
             </ul>
