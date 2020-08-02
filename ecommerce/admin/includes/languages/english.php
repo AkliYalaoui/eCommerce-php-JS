@@ -8,6 +8,7 @@
             'items'        => 'Items',
             'members'      => 'Members',
             'statistics'   => 'Statistics',
+            'comments'     => 'Comments',
             'logs'         => 'Logs',
             'editprofile'  => 'Edit Profile',
             'setting'      => 'Settings',

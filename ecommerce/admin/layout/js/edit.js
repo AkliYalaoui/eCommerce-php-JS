@@ -67,3 +67,20 @@ if(full !== null){
     classic.classList.remove('active');
   };
 }
+
+//dashboard
+var toggleInfos =  document.querySelectorAll('.toggle-info');
+for(toggleInfo of toggleInfos){
+  toggleInfo.onclick = function(){
+    var panelBody = this.parentElement.nextElementSibling;
+    var icon = this.firstElementChild;
+        panelBody.classList.toggle('hide');
+        if(panelBody.classList.contains('hide')){
+          icon.classList.remove('fa-plus');
+          icon.classList.add('fa-minus');
+        }else{
+          icon.classList.add('fa-plus');
+          icon.classList.remove('fa-minus');
+        }
+  };
+}

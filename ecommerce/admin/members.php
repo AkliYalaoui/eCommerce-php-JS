@@ -23,13 +23,12 @@
         if($do == 'Manage'){
             $stmt = $con->prepare('SELECT * FROM users WHERE groupeid != 1');
             $stmt->execute();
-            $users = $stmt->fetchAll(PDO::FETCH_OBJ);
-            
+            $users = $stmt->fetchAll(PDO::FETCH_OBJ);      
             ?>
-            <h1 style="text-align:center;color:#444; margin-top:40px;">Manage Members</h1>
+            <h1 class="edit-title">Manage Members</h1>
             <div class="container table-container">
                 <a class="btn-primary" href="?do=Add"><span>+</span> New Member</a>
-                <table class="table">
+                <table class="table mg-auto">
                     <thead>
                         <tr>
                             <td>ID</td>
@@ -49,8 +48,8 @@
                                 <td><?php echo $user->fullname ?></td>
                                 <td><?php echo $user->regdate ?></td>
                                 <td>
-                                    <a  onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
-                                    <a  href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
+                                    <a  class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
+                                    <a  class="btn btn-success dp-inherit" href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>    
@@ -169,11 +168,18 @@
                     echo "</div>";
              // update the database
                 if(count($formErros) == 0){
+                    $query = "SELECT username FROM users WHERE username = ? AND userid != ?";
+                    $stmt = $con->prepare($query);
+                    $stmt->execute(array($username,$id));
+                    if($stmt->rowCount() == 0){
                     $query = 'UPDATE users SET username=?,password=?,email=?,fullname=? WHERE userid=?';
                     $stmt = $con->prepare($query);
                     $stmt->execute(array($username,$Newpassword,$email,$full,$id));
                     //echo succes message
                     redirect("<div class='alert alert-success'>".$stmt->rowCount()." record updated</div>",5,"back");
+                    }else{
+                        redirect("<div class='alert alert-danger'>User Already Exists</div>",5,"back");
+                    }
                 }   
             }else{
                 redirect("<div class='alert alert-danger'>You can\' browse this page directly</div>",6);
@@ -217,13 +223,9 @@
                     }else{
                         $password = sha1($password);
                     }
-                    echo "<div class='alert-container'>";
-                    foreach($formErros as $err){
-                        echo $err;
-                    }
-                    echo "</div>";
              // update the database
-                if(count($formErros) == 0 && !is_exist($con,'username','users',$username)){
+                if(count($formErros) == 0 ){
+                    if(!is_exist($con,'username','users',$username)){
                         $query = 'INSERT INTO users 
                         (username,password,email,fullname,groupeid,truststatus,regstatus) 
                         VALUES(?,?,?,?,?,?,?)';
@@ -231,9 +233,16 @@
                         $stmt->execute(array($username,$password,$email,$full,0,0,1));
                         //echo succes message
                         redirect("<div class='alert alert-success'>".$stmt->rowCount()." record Inserted</div>",5,"back");
+                    }else{
+                        redirect("<div class='alert alert-danger'>User Already Exists</div>","back");
+                    }
                 }else{
-                        redirect("<div class='alert alert-danger'>User Already Exists</div>");
-                    } 
+                    echo "<div class='alert-container'>";
+                    foreach($formErros as $err){
+                        echo $err;
+                    }
+                    echo "</div>";  
+                } 
             }else{
                 redirect("<div class='alert alert-danger'>You can\' browse this page directly</div>",6);
             }
@@ -266,9 +275,9 @@
                                 <td><?php echo $user->regdate ?></td>
                                 <td><?php echo $user->regstatus ?></td>
                                 <td>
-                                    <a onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
-                                    <a href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
-                                    <a href="?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
+                                    <a class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
+                                    <a class="btn btn-success dp-inherit" href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
+                                    <a class="btn btn-purple dp-inherit" href="?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>    
