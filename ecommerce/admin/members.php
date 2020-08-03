@@ -48,6 +48,9 @@
                                 <td><?php echo $user->fullname ?></td>
                                 <td><?php echo $user->regdate ?></td>
                                 <td>
+                                    <?php if($user->regstatus == 0): ?>
+                                        <a class="btn btn-purple dp-inherit" href="?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
+                                    <?php endif; ?> 
                                     <a  class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
                                     <a  class="btn btn-success dp-inherit" href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
                                 </td>

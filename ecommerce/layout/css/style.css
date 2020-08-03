@@ -400,6 +400,16 @@ header{
     width: 50%;
     padding: 10px;
 }
+.panel.panel-primary {
+    margin-bottom: 20px;
+}
+.panel.panel-primary  .panel-heading{
+    background-color: #3498DB;
+    color: #fff;
+}
+.panel.panel-primary  .panel-body{
+    border-color: #3498DB;
+}
 .panel .panel-heading{
     background-color: #CCC;
     padding: 10px;
@@ -533,4 +543,52 @@ header{
 }
 .lg-span:last-of-type.show{
     color: #00b894;
+}
+.username-sp{
+    color: #333;
+    font-size: 20px;
+}
+.wait-approuve{
+    padding: 10px;
+    display: inline-block;
+    background-color: #00B0FF;
+    border-radius: 9px;
+    color: #fff;
+    font-weight: bold;
+    font-style: italic;
+    position: relative;
+    top: 13px;
+    left: 13px;
+}
+.user-info{
+    list-style: none;
+}
+.user-info li{
+    padding: 10px;
+}
+.user-info li span{
+    width: 160px;
+    display: inline-block;
+}
+.user-info li:nth-child(odd){
+    background-color: #DDD;
+}
+.user-info li:nth-child(odd) i{
+    color: #3498DB;
+}
+.user-info li:nth-child(even) i{
+    color: #555;
+}
+.panel-body.panel-float{
+    overflow: hidden;
+}
+.panel-body.panel-float form{
+    float: left;
+    width: 65%;
+    margin-top: 29px;
+}
+.panel-body.panel-float .card{
+    float: right;
+    width: 35%;
+    margin: 30px 0;
 }

@@ -1,6 +1,9 @@
 <?php 
+        session_start();
         $pageTitle = "Categories";
-        include 'init.php';?>
+        include 'init.php';
+        if(isset($_GET['name']) && isset($_GET['id'])){
+        ?>
 
             <h1 class="edit-title"><?php echo str_replace('-'," ",$_GET['name']) ?></h1>
             <div class="container card-container">
@@ -27,6 +30,9 @@
                 }else{
                     redirect("<div class='alert alert-danger'>There Is No Item In This Category</div>",5,'back');
             }
+        }else{
+            redirect("<div class='alert alert-danger'>There Is No Such Page</div>",5,'back');
+        }
             ?>
         </div>
 

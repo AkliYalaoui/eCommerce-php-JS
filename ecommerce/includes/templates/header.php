@@ -11,7 +11,15 @@
     <div class="container">
         <?php if(!isset($_SESSION['user'])){ ?>
                 <a class="btn-primary" href="login.php">Login/signup</a>
-        <?php }else{echo "Welcome <strong>".$_SESSION['user']."</strong>";}?>
+        <?php }else{
+                echo "<span class='username-sp'>Welcome <strong>".$_SESSION['user']."</strong></span>";
+                if(!is_activate($_SESSION['user'])){
+                    echo "<span class='wait-approuve'>Waiting For Admin Approval ...</span>";
+                }
+                echo "<a class='btn btn-danger' href='logout.php'>Logout</a>";
+                echo '<a class="btn btn-success" href="ads.php">New Add</a>';
+                echo "<a class='btn-primary' href='profile.php?do=Edit'>My Profile</a>";
+                }?>
 </div>
     </div>
 <header>

@@ -1,5 +1,6 @@
 <?php  session_start(); 
-       $pageTitle = "Shop";
+       $pageTitle = "Home";
        include 'init.php';
+
 ?>
 <?php include $template . "footer.php"; ?>

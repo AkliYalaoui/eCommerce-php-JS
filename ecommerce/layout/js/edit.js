@@ -117,3 +117,16 @@ for(sp of spans){
     }
   }
 }
+
+//create Ad Live Preview
+if(document.querySelector('form.live-preview')!== null && document.querySelector('.card.live-preview')!== null){
+  document.querySelector('form.live-preview input[name="name"]').oninput = function(){
+    document.querySelector('.card .card-body h3').textContent = this.value;
+  };
+  document.querySelector('form.live-preview input[name="description"]').oninput = function(){
+    document.querySelector('.card .card-body p').textContent = this.value;
+  };
+  document.querySelector('form.live-preview input[name="price"]').oninput = function(){
+    document.querySelector('.card .card-overlay span').textContent = this.value;
+  };
+}

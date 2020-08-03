@@ -80,10 +80,40 @@ function getCategories(){
 /* 
     Get Items
 */
-function getItems($id){
+function getItems($id,$condition=null){
     global $con;
-    $sql = "SELECT * FROM items WHERE categoryid=? ORDER BY itemid DESC";
+    if($condition == null){
+        $condition ="categoryid";
+    }
+    $sql = "SELECT * FROM items WHERE $condition=? ORDER BY itemid DESC";
     $stmt = $con->prepare($sql);
     $stmt->execute(array($id));
     return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+/* 
+    Get Comments
+*/
+function getComments($id,$condition=null){
+    global $con;
+    if($condition == null){
+        $condition ="itemid";
+    }
+    $sql = "SELECT * FROM comments WHERE $condition=? ORDER BY commentid DESC";
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array($id));
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+/*
+    Check USER status
+*/
+function is_activate($user){
+    global $con;
+    $stmt = $con->prepare("SELECT regstatus FROM users WHERE username=?");
+    $stmt->execute(array($user));
+    $status = $stmt->fetch(PDO::FETCH_OBJ);
+    if($status->regstatus == 1){
+        return true;
+    }else{
+        return false;
+    }
 }
