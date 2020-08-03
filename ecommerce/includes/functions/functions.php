@@ -66,3 +66,24 @@ function latest($select,$from,$cpt,$order){
     $items = $stmt->fetchAll(PDO::FETCH_OBJ);
     return $items;
 }
+
+/*
+    Get Categories From Db
+*/
+function getCategories(){
+    global $con;
+    $sql = "SELECT * FROM categories ORDER BY id ASC";
+    $stmt = $con->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+/* 
+    Get Items
+*/
+function getItems($id){
+    global $con;
+    $sql = "SELECT * FROM items WHERE categoryid=? ORDER BY itemid DESC";
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array($id));
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}

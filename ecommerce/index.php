@@ -1,5 +1,5 @@
-<?php 
-       session_start();
-       include 'init.php';?>
-<script src="<?php echo $js ; ?>login.js"></script>
+<?php  session_start(); 
+       $pageTitle = "Shop";
+       include 'init.php';
+?>
 <?php include $template . "footer.php"; ?>

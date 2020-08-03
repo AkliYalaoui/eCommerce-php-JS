@@ -708,3 +708,9 @@ header{
 .clear-fix{
     clear: both;
 }
+.eye{
+    position: absolute;
+    top: 60px;
+    right: -24px;
+    cursor: pointer;
+}

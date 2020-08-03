@@ -84,3 +84,20 @@ for(toggleInfo of toggleInfos){
         }
   };
 }
+//select All passwords Fields
+
+var passwords = document.querySelectorAll('input[type="password"]');
+
+for(pwd of passwords){
+  var eye = document.createElement('i');
+      eye.classList.add('fa');
+      eye.classList.add('fa-eye');
+      eye.classList.add('eye');
+  pwd.parentElement.appendChild(eye);
+  pwd.setAttribute('data-type','text');
+  eye.onclick = function(){
+    var type = pwd.getAttribute('data-type');
+    pwd.setAttribute('data-type',pwd.getAttribute('type'));
+    pwd.setAttribute('type',type);
+  }
+}

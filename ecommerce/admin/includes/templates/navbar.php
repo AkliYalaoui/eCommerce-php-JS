@@ -19,6 +19,7 @@
                     <?php echo $_SESSION['username'];?><span></span>
                 </h4>
                 <ul id="ulSlide">
+                    <li><a href="../">Visit Shop</a></li>
                     <li><a href="members.php?do=Edit&id=<?php echo  $_SESSION['id'];?>"><?php echo lang('editprofile'); ?></a></li>
                     <?php /*<li><a href="#"><?php echo lang('setting'); ?></a></li>*/ ?>
                     <li><a href="logout.php"><?php echo lang('logout'); ?></a></li>

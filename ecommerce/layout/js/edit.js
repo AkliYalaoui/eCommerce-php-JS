@@ -84,3 +84,36 @@ for(toggleInfo of toggleInfos){
         }
   };
 }
+
+//select All passwords Fields
+
+var passwords = document.querySelectorAll('input[type="password"]');
+
+for(pwd of passwords){
+  var eye = document.createElement('i');
+      eye.classList.add('fa');
+      eye.classList.add('fa-eye');
+      eye.classList.add('eye');
+  pwd.parentElement.appendChild(eye);
+  pwd.setAttribute('data-type','text');
+  eye.onclick = function(){
+    var type = pwd.getAttribute('data-type');
+    pwd.setAttribute('data-type',pwd.getAttribute('type'));
+    pwd.setAttribute('type',type);
+  }
+}
+//login and sigin
+var spans = document.querySelectorAll('.lg-sg span');
+
+for(sp of spans){
+  sp.onclick = function(){
+    document.getElementById(this.getAttribute('data-show')).classList.add('show');
+    document.getElementById(this.getAttribute('data-hide')).classList.remove('show');
+    this.classList.add('show');
+    if(this.nextElementSibling !== null){
+      this.nextElementSibling.classList.remove('show');
+    }else{
+      this.parentElement.firstElementChild.classList.remove('show');
+    }
+  }
+}
