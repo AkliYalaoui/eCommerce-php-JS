@@ -1,15 +1,14 @@
 <?php 
         session_start();
-        $pageTitle = "Categories";
+        $pageTitle = "Tags";
         include 'init.php';
-        if(isset($_GET['name']) && isset($_GET['id'])){
+        if(isset($_GET['tag'])){
         ?>
-
-            <h1 class="edit-title"><?php echo str_replace('-'," ",$_GET['name']) ?></h1>
             <div class="container card-container">
+            <h1 class="edit-title"><?php echo $_GET['tag'] ?></h1>
             <?php  
-                $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id']:0;
-                $items = getItems($id,"approuve=1 AND categoryid");
+                $tag =  $_GET['tag'];
+                $items = getItems(1,"tags LIKE '%$tag%'  AND approuve");
                 if(!empty($items)){
                     foreach($items as $item):
             ?>
@@ -29,7 +28,7 @@
             <?php 
                 endforeach;
                 }else{
-                    echo "<div class='alert alert-danger'>There Is No Item In This Category</div>";
+                    echo "<div class='alert alert-danger'>There Is No Item In This Tag</div>";
             }
         }else{
             echo "<div class='alert alert-danger'>There Is No Such Page</div>";

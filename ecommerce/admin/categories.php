@@ -9,39 +9,29 @@
                 $sort  = "ASC";
                 $order = "ordering";
                 $sort_options = array("ASC","DESC");
-                $order_options = array("id","ordering","name","description");
                 if(isset($_GET['sort']) && in_array($_GET['sort'],$sort_options)){
                     $sort = $_GET['sort'];
                 }
                 if(isset($_GET['order']) && in_array($_GET['order'],$order_options)){
                     $order = $_GET['order'];
                 }
-                $stmt = $con->prepare("SELECT * FROM categories ORDER BY $order $sort");
+                $stmt = $con->prepare("SELECT * FROM categories WHERE parent = 0 ORDER BY $order $sort");
                 $stmt->execute();
                 $categories  = $stmt->fetchAll(PDO::FETCH_OBJ);
             ?>
                 <div class="container">
                     <h1 class="edit-title">Manage Categories</h1> 
-                    <a class="btn-primary" href="?do=Add"><span>+</span>New Category</a>
+                    <a class="btn-primary" href="?do=Add"><span><i class="fa fa-plus"></i></span>New Category</a>
                     <div class="panel mg-top-20">
                     <div class="panel-heading ordering">
                         <span>Manage Categories</span>
-                        <!-- <div>
-                            Order By:
-                            <select onchange="location.href=this.value">
-                                <option value="?do=Manage&order=ordering">ordering</option>
-                                <option value="?do=Manage&order=id">id</option>
-                                <option value="?do=Manage&order=name">name</option>
-                                <option value="?do=Manage&order=description">description</option>
-                            </select>
-                        </div> -->
                         <div>
                             Ordering : 
-                            <a class="btn btn-night btn-opacity <?php if($sort=="DESC"){echo "active";}?>" href="?do=Manage&sort=DESC">DESC</a>
-                            <a class="btn btn-night btn-opacity<?php if($sort=="ASC"){echo "active";}?>" href="?do=Manage&sort=ASC">ASC</a>
+                            <a class="btn btn-night btn-opacity <?php if($sort=="DESC"){echo "active";}?>" href="?do=Manage&sort=DESC"><i class="fa fa-arrow-down"></i></a>
+                            <a class="btn btn-night btn-opacity<?php if($sort=="ASC"){echo "active";}?>" href="?do=Manage&sort=ASC"><i class="fa fa-arrow-up"></i></a>
                             View :
-                            <span id="classic" class="btn btn-success btn-opacity active">Classic</span>
-                            <span id="full" class="btn btn-success btn-opacity">Full</span>
+                            <span id="classic" class="btn btn-night btn-opacity active">Classic</span>
+                            <span id="full" class="btn btn-night btn-opacity">Full</span>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -58,6 +48,24 @@
                                         <a class="btn btn-danger" onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $category->id ?>">Delete</a>
                                         <a class="btn btn-success" href="?do=Edit&id=<?php echo $category->id ?>">Edit</a>
                                     </div>
+                                    <?php
+                                        $stmtSub = $con->prepare("SELECT * FROM categories WHERE parent = $category->id ORDER BY id DESC");
+                                        $stmtSub->execute();
+                                        $categoriesSub = $stmtSub->fetchAll(PDO::FETCH_OBJ);
+                                        if($stmtSub->rowCount() > 0):
+                                            echo "<div class='sub-category'>";
+                                            echo "<h3>Child Categories</h3>";
+                                            echo "<ul>";
+                                        foreach($categoriesSub as $categorySub): ?>
+                                            <li>
+                                                <a href="?do=Edit&id=<?php echo $categorySub->id ?>"><?php echo $categorySub->name ?></a>
+                                                <a href="?do=Delete&id=<?php echo $categorySub->id ?>" onclick="return confirm('Are You Sure You Want To Delete ?')"><i class="fa fa-trash"></i></a>
+                                            </li>
+                                        <?php 
+                                                endforeach;
+                                                echo "</ul>";
+                                                echo "</div>";
+                                            endif; ?> 
                                 </details>
                             </div>
                         <?php endforeach; ?>    
@@ -80,6 +88,18 @@
                         <div class="form-groupe">
                             <label>Ordering:</label>
                             <input type="number" name="order" min="1">
+                        </div>
+                        <div class="form-groupe">
+                            <label>Parent :</label>
+                            <select name="parent">
+                                <option value="0">None</option>
+                                <?php 
+                                    $allcat = getAll('categories','id','WHERE parent=0');
+                                    foreach($allcat as $catyg){
+                                        echo "<option value='".$catyg->id."'>$catyg->name</option>";
+                                    }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-groupe-field">
                             <div class="form-groupe-item">
@@ -131,7 +151,7 @@
             }elseif($do=="Insert"){
 
                 if($_SERVER['REQUEST_METHOD'] === "POST"){
-                    if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order']) && isset($_POST['visibility']) && isset($_POST['comments']) && isset($_POST['ads'])){
+                    if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order']) && isset($_POST['visibility']) && isset($_POST['comments']) && isset($_POST['ads']) && isset($_POST['parent'])){
                         echo "<h1 class='edit-title'>Insert Category</h1>";
                         $name = $_POST['name'];
                         $description = $_POST['description'];
@@ -139,6 +159,7 @@
                         $visibility = $_POST['visibility'];
                         $comments = $_POST['comments'];
                         $ads = $_POST['ads'];
+                        $parent = $_POST['parent'];
                         $formErrors = array();
 
                         if(empty($name)){
@@ -159,8 +180,8 @@
 
                         if(count($formErrors) == 0){
                             if(!is_exist($con,"name",'categories',$name)){
-                                $stmt = $con->prepare('INSERT INTO categories (name,description,ordering,visibility,comment,ads) VALUES(?,?,?,?,?,?)');
-                                $stmt->execute(array($name,$description,$order,$visibility,$comments,$ads));
+                                $stmt = $con->prepare('INSERT INTO categories (name,description,ordering,visibility,comment,ads,parent) VALUES(?,?,?,?,?,?,?)');
+                                $stmt->execute(array($name,$description,$order,$visibility,$comments,$ads,$parent));
                                 redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Inserted</div>",6,'back');
                             }else{
                                 redirect("<div class='alert alert-danger'>Category Already Exists</div>",6,'back');
@@ -200,6 +221,22 @@
                         <div class="form-groupe">
                             <label>Ordering:</label>
                             <input type="number" name="order" min="1" value="<?php echo $caty->ordering;?>">
+                        </div>
+                        <div class="form-groupe">
+                            <label>Parent :</label>
+                            <select name="parent">
+                                <option value="0" <?php if($caty->parent == 0){ echo "selected";} ?>>None</option>
+                                <?php 
+                                    $allcat = getAll('categories','id','WHERE parent=0');
+                                    foreach($allcat as $catyg){
+                                        if($caty->parent == $catyg->id){
+                                            echo "<option selected value='".$catyg->id."'>$catyg->name</option>";
+                                        }else{
+                                            echo "<option value='".$catyg->id."'>$catyg->name</option>";
+                                        }
+                                    }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-groupe-field">
                             <div class="form-groupe-item">
@@ -252,7 +289,8 @@
                 }
             }elseif($do=="Update"){
                 if($_SERVER['REQUEST_METHOD'] === "POST"){
-                    if(isset($_POST['id']) && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order']) && isset($_POST['visibility']) && isset($_POST['comments']) && isset($_POST['ads'])){
+                    if(isset($_POST['id']) && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order']) && isset($_POST['visibility']) && isset($_POST['comments']) && isset($_POST['ads']) && isset($_POST['parent'])){
+                        
                         echo "<h1 class='edit-title'>Update Category</h1>";
                         $id = $_POST['id'];
                         $name = $_POST['name'];
@@ -261,6 +299,7 @@
                         $visibility = $_POST['visibility'];
                         $comments = $_POST['comments'];
                         $ads = $_POST['ads'];
+                        $parent = $_POST['parent'];
                         $formErrors = array();
 
                         if(empty($name)){
@@ -281,8 +320,8 @@
 
                         if(count($formErrors) == 0){
                             if(is_exist($con,"name",'categories',$name)){
-                                $stmt = $con->prepare('UPDATE categories SET name=?,description=?,ordering=?,visibility=?,comment=?,ads=? WHERE id=?');
-                                $stmt->execute(array($name,$description,$order,$visibility,$comments,$ads,$id));
+                                $stmt = $con->prepare('UPDATE categories SET name=?,description=?,ordering=?,visibility=?,comment=?,ads=?,parent=? WHERE id=?');
+                                $stmt->execute(array($name,$description,$order,$visibility,$comments,$ads,$parent,$id));
                                 redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Updated</div>",6,'back');
                             }else{
                                 redirect("<div class='alert alert-danger'>Category Does Not Exist</div>",6,'back');

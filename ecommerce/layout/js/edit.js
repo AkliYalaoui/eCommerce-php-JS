@@ -1,5 +1,5 @@
 //add astrisk on required fields
-var requiredFields = document.querySelectorAll('form input[required=""]');
+var requiredFields = document.querySelectorAll('form *[required=""]');
 
 for(required of requiredFields){
     var astrisk = document.createElement("span");
@@ -127,6 +127,6 @@ if(document.querySelector('form.live-preview')!== null && document.querySelector
     document.querySelector('.card .card-body p').textContent = this.value;
   };
   document.querySelector('form.live-preview input[name="price"]').oninput = function(){
-    document.querySelector('.card .card-overlay span').textContent = this.value;
+    document.querySelector('.card .card-overlay span').textContent = "$" + this.value;
   };
 }

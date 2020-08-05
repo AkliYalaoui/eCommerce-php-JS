@@ -39,3 +39,9 @@ window.onresize = function(){
             }
         }
 }
+var profileBtn = document.getElementById('dropdown');
+if(profileBtn !== null){
+    profileBtn.onclick = function(){
+        this.nextElementSibling.classList.toggle('open');
+    };
+}

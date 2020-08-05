@@ -93,12 +93,18 @@ function getItems($id,$condition=null){
 /* 
     Get Comments
 */
-function getComments($id,$condition=null){
+function getComments($select=null,$id,$condition=null,$innerJoin=null){
     global $con;
     if($condition == null){
         $condition ="itemid";
     }
-    $sql = "SELECT * FROM comments WHERE $condition=? ORDER BY commentid DESC";
+    if($innerJoin == null){
+        $innerJoin ="";
+    }
+    if($select == null){
+        $select ="*";
+    }
+    $sql = "SELECT $select FROM comments $innerJoin WHERE $condition=? ORDER BY commentid DESC";
     $stmt = $con->prepare($sql);
     $stmt->execute(array($id));
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -116,4 +122,14 @@ function is_activate($user){
     }else{
         return false;
     }
+}
+/*
+    Get All Record From A specific Table
+ */
+
+function getAll($table,$order,$where=null,$ordering="DESC"){
+    global $con;
+    $stmt = $con->prepare("SELECT * FROM $table $where ORDER BY $order $ordering");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
 }

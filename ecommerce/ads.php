@@ -19,12 +19,13 @@
         $stmt->execute();
         $categories  = $stmt->fetchAll(PDO::FETCH_OBJ);
         if($_SERVER['REQUEST_METHOD']== "POST"){
-            if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['categories'])){
+            if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['categories']) && isset($_POST['tags'])){
                 $name        = filter_var($_POST['name'],FILTER_SANITIZE_STRING);
                 $description = filter_var($_POST['description'],FILTER_SANITIZE_STRING);
                 $price       = filter_var($_POST['price'],FILTER_SANITIZE_NUMBER_INT);
                 $category    = filter_var($_POST['categories'],FILTER_SANITIZE_STRING);
                 $countri     = filter_var($_POST['country'],FILTER_SANITIZE_STRING);
+                $tags        = filter_var($_POST['tags'],FILTER_SANITIZE_STRING);
                 $status      = filter_var($_POST['status'],FILTER_SANITIZE_NUMBER_INT);
                 //validate The Form
                 $formErrors = array();
@@ -41,7 +42,7 @@
                     array_push($formErrors,"You Must Select A Category");
                 }
                 if($countri == "0"){
-                    array_push($formErrors,"$countri You Must Select A Country");
+                    array_push($formErrors,"You Must Select A Country");
                 }
                 if($status == 0){
                     array_push($formErrors,"You Must Select The Status Of The Item");
@@ -52,8 +53,8 @@
                     $stmt->execute(array($_SESSION['user']));
                     $user =$stmt->fetch(PDO::FETCH_OBJ)->userid;
                     //insert item
-                    $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid) VALUES(?,?,?,?,?,?,?)");
-                    $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user));
+                    $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags) VALUES(?,?,?,?,?,?,?,?)");
+                    $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags));
                     echo "<div class='alert alert-success'>Item Added</div>";
                 }else{
                     echo "<div class='container'>";
@@ -84,17 +85,33 @@
                             <input type="text" name="price" required>
                         </div>
                         <div class="form-groupe">
+                            <label>Tags:</label>
+                            <input type="text" name="tags" placeholder="Separate Tags With Comas">
+                        </div>
+                        <div class="form-groupe">
                             <label>Category:</label>
                             <select name="categories">
                                 <option value="0">...</option>
                                 <?php foreach($categories as $category): ?>
                                     <option value="<?php echo $category->id; ?>"><?php echo $category->name; ?></option>
+                                    <?php 
+                                        $stmt = $con->prepare("SELECT id,name from categories WHERE parent=$category->id");
+                                        $stmt->execute();
+                                        $subcategories  = $stmt->fetchAll(PDO::FETCH_OBJ);
+                                        if($stmt->rowCount()>0):
+                                            echo "<optgroup label='{$category->name} Children'>";
+                                        foreach($subcategories as $sub):
+                                    ?>
+                                    <option value="<?php echo $sub->id; ?>"><?php echo $sub->name; ?></option>
+                                    <?php endforeach;
+                                            echo "</optgroup>";
+                                            endif;?>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-groupe">
                             <label>Country:</label>
-                            <select name="country">
+                            <select name="country" required>
                                 <option value="0">...</option>
                                 <?php foreach($countries as $country): ?>
                                     <option value="<?php echo $country ?>"><?php echo $country ?></option>
@@ -102,7 +119,7 @@
                             </select>
                         </div>
                         <div class="form-groupe">
-                            <label>Status:</label>
+                            <label>Status:</label required>
                             <select name="status">
                                 <option value="0">...</option>
                                 <?php foreach($status as $st => $value): ?>
@@ -117,7 +134,7 @@
                 <div class="card live-preview">
                     <div class="card-header">
                         <img src="avatar.png" alt="image">
-                            <div class="card-overlay">$<span>price</span></div>
+                            <div class="card-overlay"><span>price</span></div>
                     </div>
                     <div class="card-body">
                             <h3>Title</h3>

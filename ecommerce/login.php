@@ -23,6 +23,7 @@
                 $stmt->execute(array($username,sha1($password)));
                 if($stmt->rowCount() > 0){
                     $_SESSION['user'] = $username;
+                    $_SESSION['user_member'] = $stmt->fetch(PDO::FETCH_OBJ)->userid;
                     header('Location:index.php');
                     exit();
                 }else{

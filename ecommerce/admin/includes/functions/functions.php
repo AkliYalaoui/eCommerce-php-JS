@@ -66,3 +66,12 @@ function latest($select,$from,$cpt,$order){
     $items = $stmt->fetchAll(PDO::FETCH_OBJ);
     return $items;
 }
+/*
+    Get All Record From A specific Table
+ */
+function getAll($table,$order,$where=null,$ordering="DESC"){
+    global $con;
+    $stmt = $con->prepare("SELECT * FROM $table $where ORDER BY $order $ordering");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}

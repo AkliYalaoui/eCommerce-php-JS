@@ -27,7 +27,7 @@
             ?>
             <h1 class="edit-title">Manage Members</h1>
             <div class="container table-container">
-                <a class="btn-primary" href="?do=Add"><span>+</span> New Member</a>
+                <a class="btn-primary" href="?do=Add"><span><i class="fa fa-plus"></i></span> New Member</a>
                 <table class="table mg-auto">
                     <thead>
                         <tr>
@@ -64,7 +64,7 @@
 
             <div class="container">
                 <h1 class="edit-title">Add A Member</h1> 
-                <form action="?do=Insert" method="POST">
+                <form action="?do=Insert" method="POST" enctype="multipart/form-data">
                 <!-- start username field -->
                     <div class="form-groupe">
                         <label>Username</label>
@@ -84,6 +84,11 @@
                     <div class="form-groupe">
                         <label>Full name</label>
                         <input type="text" name="full" required>
+                    </div>
+                    <!-- start Profile Image field -->
+                    <div class="form-groupe">
+                        <label>User Avatar : </label>
+                        <input type="file" name="avatar">
                     </div>
                     <!-- start save field -->
                     <div class="form-groupe">
@@ -206,6 +211,7 @@
                     $username =$_POST['username'];
                     $email =$_POST['email'];
                     $full =$_POST['full'];
+                    $avatar =$_FILES['avatar'];
                     $password = $_POST['password'];
                     //validate the form
                     $formErros = array();
@@ -226,6 +232,22 @@
                     }else{
                         $password = sha1($password);
                     }
+                if($count($formErros) == 0){
+                     //deal with the avatar
+                        $img_extension =  array('png','jpeg','jpg',"gif");
+                        $avatarExploded = explode('.',$avatar['name']);
+                        $avatarExtension = strtolower(array_pop($avatarExploded));
+                        
+                        if(in_array($avatarExtension,$img_extension)){
+                            if($avatar['error'] == 0){
+                                move_uploaded_file($avatar['tmp_name'],'../data/uploads/'.$username.".".$avatarExtension);
+                            }else{
+                                array_push($formErros,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                            }
+                        }else{
+                            array_push($formErros,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
+                        }
+                }
              // update the database
                 if(count($formErros) == 0 ){
                     if(!is_exist($con,'username','users',$username)){

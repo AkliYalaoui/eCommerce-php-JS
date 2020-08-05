@@ -352,9 +352,8 @@ header{
     border-radius: 3px;
 }
 .btn-primary span{
-    font-weight: bold;
-    font-size: 25px;
-    color: blue;
+    color: #fff;
+    margin-right: 5px;
 }
 .table{
     border-collapse: collapse;
@@ -592,9 +591,10 @@ header{
     border-bottom: 1px solid #ccc;
     margin-top: 20px;
     overflow: hidden;
+    padding: 10px;
 }
 .category:hover{
-    background-color: #EEE;
+    background-color: rgb(214, 213, 160);
 }
 .category .full-view summary{
     cursor: pointer;
@@ -604,14 +604,13 @@ header{
 }
 .category h2{
     color: #333;
-    text-align: center;
+    padding: 10px;
 }
 .category p{
     line-height: 1.5;
     color: #555;
     padding: 10px 20px;
-    margin: 10px 0;
-    text-align: center;
+    margin: 5px 0;
 }
 .category span{
     font-weight: bold;
@@ -713,4 +712,29 @@ header{
     top: 60px;
     right: -24px;
     cursor: pointer;
+}
+.sub-category{
+    margin-top: -32px;
+}
+.sub-category a{
+    color: #00B0FF;
+    text-decoration: none;
+    margin-right: 10px;
+}
+.sub-category li a:first-of-type::before{
+    content: "-  ";
+}
+.sub-category h3{
+    color: #109355;
+    font-style: italic;
+    margin-left: 20px;
+    margin-bottom: -9px;
+}
+.sub-category ul{
+    list-style: none;
+    padding: 10px;
+    margin-left: 30px;
+}
+.sub-category ul li{
+    padding: 10px;
 }

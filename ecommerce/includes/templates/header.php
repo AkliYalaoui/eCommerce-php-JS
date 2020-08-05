@@ -11,15 +11,19 @@
     <div class="container">
         <?php if(!isset($_SESSION['user'])){ ?>
                 <a class="btn-primary" href="login.php">Login/signup</a>
-        <?php }else{
-                echo "<span class='username-sp'>Welcome <strong>".$_SESSION['user']."</strong></span>";
-                if(!is_activate($_SESSION['user'])){
-                    echo "<span class='wait-approuve'>Waiting For Admin Approval ...</span>";
-                }
-                echo "<a class='btn btn-danger' href='logout.php'>Logout</a>";
-                echo '<a class="btn btn-success" href="ads.php">New Add</a>';
-                echo "<a class='btn-primary' href='profile.php?do=Edit'>My Profile</a>";
-                }?>
+        <?php }else{?>
+                <div class="dropdown">
+                    <a href="profile.php"><img src="avatar.png" alt="avatar"></a>
+                    <button id="dropdown"><?php echo $_SESSION['user']; ?></button>
+                    <ul>
+                        <li><a href='profile.php'>My Profile</a></li>
+                        <li><a href="ads.php">New Item</a></li>
+                        <li><a href="profile.php#my-items">My Items</a></li>
+                        <li><a href="profile.php#my-comments">My Comments</a></li>
+                        <li><a href='logout.php'>Logout</a></li>
+                    </ul>
+                </div>
+                <?php } ?>
 </div>
     </div>
 <header>
@@ -31,7 +35,7 @@
             </span>
         </div>
             <ul class="nav-list nav-right" id="menuBarOne">
-                <?php $categories = getCategories();
+                <?php $categories = getAll('categories','id','WHERE parent=0',"ASC");
                     foreach($categories as $category): ?>
                     <li><a href="categories.php?id=<?php echo $category->id; ?>&name=<?php echo str_replace(" ","-",$category->name); ?>"><?php echo $category->name; ?></a></li>
                 <?php endforeach; ?>

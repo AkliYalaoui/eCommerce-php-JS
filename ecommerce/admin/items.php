@@ -19,7 +19,7 @@
         $stmt->execute();
         $users  = $stmt->fetchAll(PDO::FETCH_OBJ);
         //select all categories
-        $stmt = $con->prepare("SELECT id,name from categories");
+        $stmt = $con->prepare("SELECT id,name from categories WHERE parent=0");
         $stmt->execute();
         $categories  = $stmt->fetchAll(PDO::FETCH_OBJ);
         //select All Items
@@ -33,7 +33,7 @@
         if($do=="Manage"){?>
             <h1 class="edit-title">Manage Items</h1>
             <div class="container table-container">
-                <a class="btn-primary" href="?do=Add"><span>+</span> New Items</a>
+                <a class="btn-primary" href="?do=Add"><span><i class="fa fa-plus"></i></span> New Items</a>
                 <table class="table">
                     <thead>
                         <tr>
@@ -92,6 +92,10 @@
                             <input type="text" name="price" required>
                         </div>
                         <div class="form-groupe">
+                            <label>Tags:</label>
+                            <input type="text" name="tags" placeholder="Separate Tags With Comas">
+                        </div>
+                        <div class="form-groupe">
                             <label>User:</label>
                             <select name="user">
                                 <option value="0">...</option>
@@ -106,6 +110,18 @@
                                 <option value="0">...</option>
                                 <?php foreach($categories as $category): ?>
                                     <option value="<?php echo $category->id; ?>"><?php echo $category->name; ?></option>
+                                    <?php 
+                                        $stmt = $con->prepare("SELECT id,name from categories WHERE parent=$category->id");
+                                        $stmt->execute();
+                                        $subcategories  = $stmt->fetchAll(PDO::FETCH_OBJ);
+                                        if($stmt->rowCount()>0):
+                                            echo "<optgroup label='{$category->name} Children'>";
+                                        foreach($subcategories as $sub):
+                                    ?>
+                                    <option value="<?php echo $sub->id; ?>"><?php echo $sub->name; ?></option>
+                                    <?php endforeach;
+                                            echo "</optgroup>";
+                                            endif;?>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -136,7 +152,7 @@
         }elseif($do == "Insert"){
             if($_SERVER['REQUEST_METHOD'] === "POST"){
                 echo "<h1 class='edit-title'>Insert Item</h1>";
-                if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['user']) && isset($_POST['categories'])){
+                if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['user']) && isset($_POST['categories']) && isset($_POST['tags'])){
                     $name = $_POST['name'];
                     $description = $_POST['description'];
                     $price = $_POST['price'];
@@ -144,6 +160,7 @@
                     $category = $_POST['categories'];
                     $countri= $_POST['country'];
                     $status = $_POST['status'];
+                    $tags = $_POST['tags'];
                     //validate The Form
                     $formErrors = array();
                     if(empty($name)){
@@ -170,8 +187,8 @@
                     if(count($formErrors) == 0){
                         $user = intval($user);
                         $category = intval($category);
-                        $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid) VALUES(?,?,?,?,?,?,?)");
-                        $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user));
+                        $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags) VALUES(?,?,?,?,?,?,?,?)");
+                        $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags));
                         redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Inserted</div>",4,'back');
                     }else{
                         echo "<div class='container'>";
@@ -208,6 +225,10 @@
                         <div class="form-groupe">
                             <label>Price:</label>
                             <input type="text" name="price" required value="<?php echo $item->price?>">
+                        </div>
+                        <div class="form-groupe">
+                            <label>Tags:</label>
+                            <input type="text" name="tags" value="<?php echo $item->tags?>">
                         </div>
                         <div class="form-groupe">
                             <label>User:</label>
@@ -252,7 +273,7 @@
         }elseif($do == "Update"){
             if($_SERVER['REQUEST_METHOD'] === "POST"){
                 echo "<h1 class='edit-title'>Update Item</h1>";
-                if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['user']) && isset($_POST['categories'])){
+                if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['price']) && isset($_POST['country']) && isset($_POST['status']) && isset($_POST['user']) && isset($_POST['categories']) && isset($_POST['tags'])){
                     $name = $_POST['name'];
                     $description = $_POST['description'];
                     $price = $_POST['price'];
@@ -261,6 +282,7 @@
                     $countri= $_POST['country'];
                     $status = $_POST['status'];
                     $id=$_POST['itemid'];
+                    $tags=$_POST['tags'];
                     //validate The Form
                     $formErrors = array();
                     if(empty($name)){
@@ -276,8 +298,8 @@
                         if(is_exist($con,"itemid","items",$id)){
                             $user = intval($user);
                             $category = intval($category);
-                            $stmt = $con->prepare("UPDATE items SET name=?,description=?,price=?,country=?,status=?,categoryid=?,userid=? WHERE itemid=?");
-                            $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$id));
+                            $stmt = $con->prepare("UPDATE items SET name=?,description=?,price=?,country=?,status=?,categoryid=?,userid=?,tags=? WHERE itemid=?");
+                            $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags,$id));
                             redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Updated</div>",4,'back');
                         }else{
                             redirect("<div class='alert alert-danger'>There Is No Such Item</div>",5,'back');
