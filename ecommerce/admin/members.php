@@ -32,6 +32,7 @@
                     <thead>
                         <tr>
                             <td>ID</td>
+                            <td>Avatar</td>
                             <td>UserName</td>
                             <td>Email</td>
                             <td>Full Name</td>
@@ -43,6 +44,15 @@
                         <?php foreach($users as $user): ?>
                             <tr>
                                 <td><?php echo $user->userid ?></td>
+                                <td>
+                                    <?php
+                                        $avatarPath = "../data/uploads/".$user->avatar;
+                                        if(empty($user->avatar)){
+                                            $avatarPath = "../avatar.png"; 
+                                        }
+                                    ?>
+                                    <img class="user-avatar" src="<?php echo $avatarPath ?>" alt="avatar">
+                                </td>
                                 <td><?php echo $user->username ?></td>
                                 <td><?php echo $user->email ?></td>
                                 <td><?php echo $user->fullname ?></td>
@@ -88,7 +98,7 @@
                     <!-- start Profile Image field -->
                     <div class="form-groupe">
                         <label>User Avatar : </label>
-                        <input type="file" name="avatar">
+                        <input type="file" name="avatar" required>
                     </div>
                     <!-- start save field -->
                     <div class="form-groupe">
@@ -232,17 +242,26 @@
                     }else{
                         $password = sha1($password);
                     }
-                if($count($formErros) == 0){
+                    if(empty($avatar['name'])){
+                        array_push($formErros,'<div class="alert alert-danger">Avatar Is Required</div>');
+                    }
+
+                if(count($formErros) == 0){
                      //deal with the avatar
                         $img_extension =  array('png','jpeg','jpg',"gif");
                         $avatarExploded = explode('.',$avatar['name']);
                         $avatarExtension = strtolower(array_pop($avatarExploded));
-                        
+
                         if(in_array($avatarExtension,$img_extension)){
-                            if($avatar['error'] == 0){
-                                move_uploaded_file($avatar['tmp_name'],'../data/uploads/'.$username.".".$avatarExtension);
+                            if($avatar['size'] <= pow(2,22)){
+                                if($avatar['error'] == 0){
+                                    $profilePic = uniqid($username,true).".".$avatarExtension;
+                                    move_uploaded_file($avatar['tmp_name'],'../data/uploads/'.$profilePic);
+                                }else{
+                                    array_push($formErros,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                                }
                             }else{
-                                array_push($formErros,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                                array_push($formErros,'<div class="alert alert-danger">Avatar Size Can Not Be Less Than 4MB</div>');
                             }
                         }else{
                             array_push($formErros,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
@@ -252,10 +271,10 @@
                 if(count($formErros) == 0 ){
                     if(!is_exist($con,'username','users',$username)){
                         $query = 'INSERT INTO users 
-                        (username,password,email,fullname,groupeid,truststatus,regstatus) 
-                        VALUES(?,?,?,?,?,?,?)';
+                        (username,password,email,fullname,groupeid,truststatus,regstatus,avatar) 
+                        VALUES(?,?,?,?,?,?,?,?)';
                         $stmt = $con->prepare($query);
-                        $stmt->execute(array($username,$password,$email,$full,0,0,1));
+                        $stmt->execute(array($username,$password,$email,$full,0,0,1,$profilePic));
                         //echo succes message
                         redirect("<div class='alert alert-success'>".$stmt->rowCount()." record Inserted</div>",5,"back");
                     }else{
