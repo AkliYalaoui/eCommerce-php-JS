@@ -3,7 +3,7 @@
     /*
     ==================================================
     == Manage members page
-    == you can add | edit  | delete members   
+    == you can add | edit  | delete members
     ==================================================
       */
 
@@ -18,12 +18,12 @@
             $do = $_GET['do'];
         }else{
             $do = 'Manage';
-        }   
-        // start manage page 
+        }
+        // start manage page
         if($do == 'Manage'){
             $stmt = $con->prepare('SELECT * FROM users WHERE groupeid != 1');
             $stmt->execute();
-            $users = $stmt->fetchAll(PDO::FETCH_OBJ);      
+            $users = $stmt->fetchAll(PDO::FETCH_OBJ);
             ?>
             <h1 class="edit-title">Manage Members</h1>
             <div class="container table-container">
@@ -48,7 +48,7 @@
                                     <?php
                                         $avatarPath = "../data/uploads/".$user->avatar;
                                         if(empty($user->avatar)){
-                                            $avatarPath = "../avatar.png"; 
+                                            $avatarPath = "../avatar.png";
                                         }
                                     ?>
                                     <img class="user-avatar" src="<?php echo $avatarPath ?>" alt="avatar">
@@ -60,12 +60,12 @@
                                 <td>
                                     <?php if($user->regstatus == 0): ?>
                                         <a class="btn btn-purple dp-inherit" href="?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
-                                    <?php endif; ?> 
+                                    <?php endif; ?>
                                     <a  class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
                                     <a  class="btn btn-success dp-inherit" href="?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>    
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -73,7 +73,7 @@
             }elseif($do == 'Add'){?>
 
             <div class="container">
-                <h1 class="edit-title">Add A Member</h1> 
+                <h1 class="edit-title">Add A Member</h1>
                 <form action="?do=Insert" method="POST" enctype="multipart/form-data">
                 <!-- start username field -->
                     <div class="form-groupe">
@@ -107,20 +107,27 @@
                 </form>
             </div>
     <?php
-        }elseif($do == 'Edit'){ // edit page 
-        
+        }elseif($do == 'Edit'){ // edit page
+
         $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']): 0;
-        
+
          $query = 'SELECT * FROM users WHERE userid = ? LIMIT 1';
         $stmt =  $con->prepare($query);
         $stmt->execute(array($id));
         $row = $stmt->fetch();
         $count = $stmt->rowCount();
         if($count > 0){
-        ?>    
+        ?>
             <div class="container">
-                <h1 class="edit-title">Edit Member</h1> 
-                <form action="?do=Update" method="POST">
+                <h1 class="edit-title">Edit Member</h1>
+                <?php
+                    $avatarPath = "../data/uploads/".$row['avatar'];
+                    if(empty($row['avatar'])){
+                        $avatarPath = "../avatar.png";
+                    }
+                ?>
+                <img class="show-user-avatar" src="<?php echo $avatarPath ?>" alt="avatar">
+                <form action="?do=Update" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="userid" value="<?php echo $id; ?>">
                 <!-- start username field -->
                     <div class="form-groupe">
@@ -143,12 +150,18 @@
                         <label>Full name</label>
                         <input type="text" name="full" value="<?php echo $row['fullname']; ?>" required>
                     </div>
+                    <!-- start Profile Image field -->
+                    <div class="form-groupe">
+                        <label>User Avatar : </label>
+                        <input type="file" name="avatar">
+                        <input type="hidden" name="oldAvatar" value="<?php echo $row['avatar'] ?>">
+                    </div>
                     <!-- start save field -->
                     <div class="form-groupe">
                         <input type="submit" value="save" class="form-save">
                     </div>
                 </form>
-            </div>    
+            </div>
 
         <?php
         }else{
@@ -165,6 +178,8 @@
                     $email =$_POST['email'];
                     $full =$_POST['full'];
                     $Newpassword =  empty($_POST['newpassword']) ? $_POST['oldpassword']: sha1($_POST['newpassword']);
+                    $avatar = isset($_FILES['avatar']) ? $_FILES['avatar']: null;
+                    $oldAvatar = $_POST['oldAvatar'];
                     //validate the form
                     $formErros = array();
                     if(empty($username)){
@@ -179,6 +194,28 @@
                     if(empty($full)){
                         array_push($formErros,"<div class='alert alert-danger'>Full Name Can't Be Empty</div>");
                     }
+                    $profilePic  = $oldAvatar;
+                if(count($formErros) == 0 && $avatar !== null && !empty($avatar['name'])){
+                     //deal with the avatar
+                        $img_extension =  array('png','jpeg','jpg',"gif");
+                        $avatarExploded = explode('.',$avatar['name']);
+                        $avatarExtension = strtolower(array_pop($avatarExploded));
+
+                        if(in_array($avatarExtension,$img_extension)){
+                            if($avatar['size'] <= pow(2,22)){
+                                if($avatar['error'] == 0){
+                                    $profilePic = uniqid($username,true).".".$avatarExtension;
+                                    move_uploaded_file($avatar['tmp_name'],'../data/uploads/'.$profilePic);
+                                }else{
+                                    array_push($formErros,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                                }
+                            }else{
+                                array_push($formErros,'<div class="alert alert-danger">Avatar Size Can Not Be Less Than 4MB</div>');
+                            }
+                        }else{
+                            array_push($formErros,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
+                        }
+                }
                     echo "<div class='alert-container'>";
                         foreach($formErros as $err){
                             echo $err;
@@ -190,19 +227,19 @@
                     $stmt = $con->prepare($query);
                     $stmt->execute(array($username,$id));
                     if($stmt->rowCount() == 0){
-                    $query = 'UPDATE users SET username=?,password=?,email=?,fullname=? WHERE userid=?';
+                    $query = 'UPDATE users SET username=?,password=?,email=?,fullname=?,avatar=? WHERE userid=?';
                     $stmt = $con->prepare($query);
-                    $stmt->execute(array($username,$Newpassword,$email,$full,$id));
+                    $stmt->execute(array($username,$Newpassword,$email,$full,$profilePic,$id));
                     //echo succes message
                     redirect("<div class='alert alert-success'>".$stmt->rowCount()." record updated</div>",5,"back");
                     }else{
                         redirect("<div class='alert alert-danger'>User Already Exists</div>",5,"back");
                     }
-                }   
+                }
             }else{
                 redirect("<div class='alert alert-danger'>You can\' browse this page directly</div>",6);
             }
-            
+
         }elseif($do == 'Delete'){
             $id= is_numeric($_GET['id']) ? intval($_GET['id']): 0;
             if(is_exist($con,'userid','users',$id)){
@@ -212,7 +249,7 @@
             }else{
                 redirect("<div class='alert alert-danger'>User Does Not Exist</div>",5);
             }
-            
+
         }elseif($do == 'Insert'){
             echo   '<h1 class="edit-title">Insert A Member</h1>';
             if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -270,8 +307,8 @@
              // update the database
                 if(count($formErros) == 0 ){
                     if(!is_exist($con,'username','users',$username)){
-                        $query = 'INSERT INTO users 
-                        (username,password,email,fullname,groupeid,truststatus,regstatus,avatar) 
+                        $query = 'INSERT INTO users
+                        (username,password,email,fullname,groupeid,truststatus,regstatus,avatar)
                         VALUES(?,?,?,?,?,?,?,?)';
                         $stmt = $con->prepare($query);
                         $stmt->execute(array($username,$password,$email,$full,0,0,1,$profilePic));
@@ -285,12 +322,12 @@
                     foreach($formErros as $err){
                         echo $err;
                     }
-                    echo "</div>";  
-                } 
+                    echo "</div>";
+                }
             }else{
                 redirect("<div class='alert alert-danger'>You can\' browse this page directly</div>",6);
             }
-            
+
         }elseif($do=="Pending"){
             $stmt = $con->prepare("SELECT * FROM users WHERE regstatus = 0");
             $stmt->execute();
@@ -324,7 +361,7 @@
                                     <a class="btn btn-purple dp-inherit" href="?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>    
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
                 </div>

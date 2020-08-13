@@ -1,4 +1,4 @@
-<?php 
+<?php
         session_start();
         $pageTitle = "Categories";
         include 'init.php';
@@ -7,7 +7,7 @@
 
             <h1 class="edit-title"><?php echo str_replace('-'," ",$_GET['name']) ?></h1>
             <div class="container card-container">
-            <?php  
+            <?php
                 $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id']:0;
                 $items = getItems($id,"approuve=1 AND categoryid");
                 if(!empty($items)){
@@ -15,7 +15,7 @@
             ?>
                     <div class="card">
                         <div class="card-header">
-                            <img src="avatar.png" alt="image">
+                            <img src="<?php echo !is_null($item->img) ? 'data/uploads/'.$item->img : "avatar.png" ;?>" alt="image">
                             <div class="card-overlay">
                                 <span>$<?php echo $item->price ?></span>
                             </div>
@@ -26,7 +26,7 @@
                             <div class="date"> <time datetime="<?php echo $item->date ?>"><?php echo $item->date ?></time></div>
                         </div>
                     </div>
-            <?php 
+            <?php
                 endforeach;
                 }else{
                     echo "<div class='alert alert-danger'>There Is No Item In This Category</div>";

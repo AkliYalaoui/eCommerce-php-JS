@@ -13,7 +13,9 @@
                 <a class="btn-primary" href="login.php">Login/signup</a>
         <?php }else{?>
                 <div class="dropdown">
-                    <a href="profile.php"><img src="avatar.png" alt="avatar"></a>
+                    <a href="profile.php">
+                      <img src="<?php echo !empty($_SESSION['avatar-user']) ? 'data/uploads/'.$_SESSION['avatar-user'] : "avatar.png" ;?>" alt="image">
+                    </a>
                     <button id="dropdown"><?php echo $_SESSION['user']; ?></button>
                     <ul>
                         <li><a href='profile.php'>My Profile</a></li>
@@ -40,5 +42,5 @@
                     <li><a href="categories.php?id=<?php echo $category->id; ?>&name=<?php echo str_replace(" ","-",$category->name); ?>"><?php echo $category->name; ?></a></li>
                 <?php endforeach; ?>
             </ul>
-    </nav> 
+    </nav>
 </header>

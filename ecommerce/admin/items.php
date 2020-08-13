@@ -70,15 +70,15 @@
                                     <?php endif; ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>    
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
-        <?php    
+        <?php
         }elseif($do == "Add"){?>
-        <h1 class="edit-title">Add New Item</h1> 
+        <h1 class="edit-title">Add New Item</h1>
                 <div class="container">
-                    <form action="?do=Insert" method="post">
+                    <form action="?do=Insert" method="post" enctype="multipart/form-data">
                         <div class="form-groupe">
                             <label>Name:</label>
                             <input type="text" name="name" required>
@@ -104,13 +104,18 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <!-- start Profile Image field -->
+                        <div class="form-groupe">
+                            <label>Item Image : </label>
+                            <input type="file" name="avatar" required>
+                        </div>
                         <div class="form-groupe">
                             <label>Category:</label>
                             <select name="categories">
                                 <option value="0">...</option>
                                 <?php foreach($categories as $category): ?>
                                     <option value="<?php echo $category->id; ?>"><?php echo $category->name; ?></option>
-                                    <?php 
+                                    <?php
                                         $stmt = $con->prepare("SELECT id,name from categories WHERE parent=$category->id");
                                         $stmt->execute();
                                         $subcategories  = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -140,7 +145,7 @@
                                 <option value="0">...</option>
                                 <?php foreach($status as $st => $value): ?>
                                     <option value="<?php echo $st ?>"><?php echo $value ?></option>
-                                <?php endforeach; ?> 
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-groupe">
@@ -161,6 +166,7 @@
                     $countri= $_POST['country'];
                     $status = $_POST['status'];
                     $tags = $_POST['tags'];
+                    $avatar =$_FILES['avatar'];
                     //validate The Form
                     $formErrors = array();
                     if(empty($name)){
@@ -184,11 +190,36 @@
                     if($status == 0){
                         array_push($formErrors,"You Must Select The Status Of The Item");
                     }
+                    if(empty($avatar['name'])){
+                        array_push($formErrors,'<div class="alert alert-danger">Avatar Is Required</div>');
+                    }
+
+                if(count($formErrors) == 0){
+                     //deal with the avatar
+                        $img_extension =  array('png','jpeg','jpg',"gif");
+                        $avatarExploded = explode('.',$avatar['name']);
+                        $avatarExtension = strtolower(array_pop($avatarExploded));
+
+                        if(in_array($avatarExtension,$img_extension)){
+                            if($avatar['size'] <= pow(2,22)){
+                                if($avatar['error'] == 0){
+                                    $profilePic = uniqid($name ,true).".".$avatarExtension;
+                                    move_uploaded_file($avatar['tmp_name'],'data/uploads/'.$profilePic);
+                                }else{
+                                    array_push($formErrors,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                                }
+                            }else{
+                                array_push($formErrors,'<div class="alert alert-danger">Avatar Size Can Not Be Less Than 4MB</div>');
+                            }
+                        }else{
+                            array_push($formErrors,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
+                        }
+                }
                     if(count($formErrors) == 0){
                         $user = intval($user);
                         $category = intval($category);
-                        $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags) VALUES(?,?,?,?,?,?,?,?)");
-                        $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags));
+                        $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags,img) VALUES(?,?,?,?,?,?,?,?,?)");
+                        $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags,$profilePic));
                         redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Inserted</div>",4,'back');
                     }else{
                         echo "<div class='container'>";
@@ -210,9 +241,9 @@
             $item = $stmt->fetch(PDO::FETCH_OBJ);
             if($stmt->rowCount() > 0){
             ?>
-                <h1 class="edit-title">Edit Item</h1> 
+                <h1 class="edit-title">Edit Item</h1>
                 <div class="container">
-                    <form action="?do=Update" method="post">
+                    <form action="?do=Update" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="itemid" value="<?php echo $item->itemid ?>">
                         <div class="form-groupe">
                             <label>Name:</label>
@@ -238,6 +269,12 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <!-- start Profile Image field -->
+                        <div class="form-groupe">
+                            <label>Item Image : </label>
+                            <input type="file" name="avatar">
+                            <input type="hidden" name="oldAvatar" value="<?php echo $item->img ?>">
+                        </div>
                         <div class="form-groupe">
                             <label>Category:</label>
                             <select name="categories">
@@ -259,7 +296,7 @@
                             <select name="status">
                                 <?php foreach($status as $st => $value): ?>
                                     <option value="<?php echo $st ?>" <?php if($st == $item->status){ echo "selected";} ?>><?php echo $value ?></option>
-                                <?php endforeach; ?> 
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-groupe">
@@ -283,6 +320,8 @@
                     $status = $_POST['status'];
                     $id=$_POST['itemid'];
                     $tags=$_POST['tags'];
+                    $avatar = isset($_FILES['avatar']) ? $_FILES['avatar']: null;
+                    $oldAvatar = $_POST['oldAvatar'];
                     //validate The Form
                     $formErrors = array();
                     if(empty($name)){
@@ -294,12 +333,35 @@
                     if(empty($price)){
                         array_push($formErrors,"Item Price Can Not Be Emtpy");
                     }
+                  $profilePic  = $oldAvatar;
+
+                if(count($formErrors) == 0  && $avatar !== null && !empty($avatar['name'])){
+                     //deal with the avatar
+                        $img_extension =  array('png','jpeg','jpg',"gif");
+                        $avatarExploded = explode('.',$avatar['name']);
+                        $avatarExtension = strtolower(array_pop($avatarExploded));
+
+                        if(in_array($avatarExtension,$img_extension)){
+                            if($avatar['size'] <= pow(2,22)){
+                                if($avatar['error'] == 0){
+                                    $profilePic = uniqid($name ,true).".".$avatarExtension;
+                                    move_uploaded_file($avatar['tmp_name'],'../data/uploads/'.$profilePic);
+                                }else{
+                                    array_push($formErrors,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                                }
+                            }else{
+                                array_push($formErrors,'<div class="alert alert-danger">Avatar Size Can Not Be Less Than 4MB</div>');
+                            }
+                        }else{
+                            array_push($formErrors,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
+                        }
+                }
                     if(count($formErrors) == 0){
                         if(is_exist($con,"itemid","items",$id)){
                             $user = intval($user);
                             $category = intval($category);
-                            $stmt = $con->prepare("UPDATE items SET name=?,description=?,price=?,country=?,status=?,categoryid=?,userid=?,tags=? WHERE itemid=?");
-                            $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags,$id));
+                            $stmt = $con->prepare("UPDATE items SET name=?,description=?,price=?,country=?,status=?,categoryid=?,userid=?,tags=?,img=? WHERE itemid=?");
+                            $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags,$profilePic,$id));
                             redirect("<div class='alert alert-success'>".$stmt->rowCount()." Record Updated</div>",4,'back');
                         }else{
                             redirect("<div class='alert alert-danger'>There Is No Such Item</div>",5,'back');
@@ -348,4 +410,4 @@
     }
     ob_end_flush();
 ?>
-<script src="layout/js/edit.js"></script> 
+<script src="layout/js/edit.js"></script>

@@ -42,11 +42,11 @@
                             <tr class="odd">
                                 <td><?php echo $user->username ?></td>
                                 <td><?php echo $user->regdate ?></td>
-                                <td>   
+                                <td>
                                     <a class="btn btn-success dp-inherit" href="members.php?do=Edit&id=<?php echo $user->userid ?>">Edit</a>
                                     <?php if($user->regstatus == 0): ?>
                                         <a class="btn btn-purple dp-inherit" href="members.php?do=Activate&id=<?php echo $user->userid ?>">Activate</a>
-                                    <?php endif; ?> 
+                                    <?php endif; ?>
                                     <a class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="members.php?do=Delete&id=<?php echo $user->userid ?>">Delete</a>
                                 </td>
                             </tr>
@@ -55,7 +55,7 @@
                                     echo '<div class="alert alert-info">There Is No Users To Show</div>';
                                 } ?>
                         </tbody>
-                </table>   
+                </table>
                     </div>
                 </div>
                 <div class="panel">
@@ -83,21 +83,21 @@
                             <tr class="odd">
                                 <td><?php echo $item->name ?></td>
                                 <td><?php echo $item->price ?></td>
-                                <td>   
+                                <td>
                                     <a class="btn btn-success dp-inherit" href="items.php?do=Edit&id=<?php echo $item->itemid ?>">Edit</a>
                                     <a class="btn btn-danger dp-inherit" onclick="return confirm('Do You Really Want To Delete ?')" href="items.php?do=Delete&id=<?php echo $item->itemid?>">Delete</a>
                                     <?php if($item->approuve == 0): ?>
                                         <a class="btn btn-purple dp-inherit" href="items.php?do=Approuve&id=<?php echo $item->itemid ?>">Approuve</a>
-                                    <?php endif; ?> 
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                        <?php   
+                        <?php
                                 endforeach;
                                 }else{
                                     echo '<div class="alert alert-info">There Is No Items To Show</div>';
                                 } ?>
                         </tbody>
-                </table>   
+                </table>
                     </div>
                 </div>
                 <div class="clear-fix"></div>
@@ -110,11 +110,11 @@
                         </span>
                     </div>
                     <div class="panel-body">
-                        <?php 
+                        <?php
                             $stmt = $con->prepare("SELECT comments.*,users.username FROM comments
                             INNER JOIN users ON users.userid = comments.userid ORDER BY commentid DESC LIMIT "._CMNT_);
                             $stmt->execute();
-                            $comments  = $stmt->fetchAll(PDO::FETCH_OBJ); 
+                            $comments  = $stmt->fetchAll(PDO::FETCH_OBJ);
                             if($stmt->rowCount() > 0){
                             foreach($comments as $comment):
                         ?>
@@ -128,7 +128,42 @@
                                         <a  class="btn btn-purple" href="comments.php?do=Approuve&id=<?php echo $comment->commentid ?>">Approuve</a>
                                     <?php endif; ?>
                         </div>
-                        <?php 
+                        <?php
+                                endforeach;
+                                }else{
+                                    echo '<div class="alert alert-info">There Is No Comments To Show</div>';
+                                } ?>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <?php define('_CNST_',5);?>
+                    <div class="panel-heading">
+                        <span> Latest <?php echo _CNST_; ?> Comments</span>
+                        <span class="toggle-info">
+                            <i class="fa fa-plus fa-lg"></i>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <?php
+                            $stmt = $con->prepare("SELECT comments.*,users.username FROM comments
+                            INNER JOIN users ON users.userid = comments.userid ORDER BY commentid DESC LIMIT "._CNST_);
+                            $stmt->execute();
+                            $comments  = $stmt->fetchAll(PDO::FETCH_OBJ);
+                            if($stmt->rowCount() > 0){
+                            foreach($comments as $comment):
+                        ?>
+                        <div class="comment-box">
+                            <a href="members.php?do=Edit&id=<?php echo $comment->userid ?>"><?php echo $comment->username ?></></a>
+                            <p><?php echo $comment->comment ?></p>
+                            <div class="clear-fix"></div>
+                            <a class="btn btn-danger"  onclick="return confirm('Do You Really Want To Delete ?')" href="comments.php?do=Delete&id=<?php echo $comment->commentid ?>">Delete</a>
+                                    <a  class="btn btn-success" href="comments.php?do=Edit&id=<?php echo $comment->commentid ?>">Edit</a>
+                                    <?php if($comment->status == 0): ?>
+                                        <a  class="btn btn-purple" href="comments.php?do=Approuve&id=<?php echo $comment->commentid ?>">Approuve</a>
+                                    <?php endif; ?>
+                        </div>
+                        <?php
                                 endforeach;
                                 }else{
                                     echo '<div class="alert alert-info">There Is No Comments To Show</div>';

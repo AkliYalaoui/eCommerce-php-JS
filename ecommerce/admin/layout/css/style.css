@@ -80,7 +80,7 @@ section:nth-of-type(2) img{
     text-align: center;
     font-size: 35px;
     margin-bottom: 30px;
-    color: #555;  
+    color: #555;
 }
 .form-control{
     background-color: #FFF;
@@ -97,7 +97,7 @@ section:nth-of-type(2) img{
 
 }
 .form-btn{
-    display: block; 
+    display: block;
     height: 50px;
     width: 100%;
     border-radius: 7px;
@@ -169,7 +169,7 @@ header{
     grid-column: 8/9;
     font-size: 20px;
     cursor: pointer;
-    background-color: #3498DB; 
+    background-color: #3498DB;
     width: 100px;
     display:flex ;
     flex-direction: column;
@@ -243,14 +243,14 @@ header{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin:0 5% 20px; 
+    margin:0 5% 20px;
     width: 90%;
     position: relative;
 }
 .form-groupe-field{
     overflow: hidden;
     margin-bottom: 15px;
-    margin:0 5% 20px; 
+    margin:0 5% 20px;
     width: 90%;
 }
 .form-groupe-item{
@@ -289,7 +289,7 @@ header{
     width: 100%;
     border: 1px solid #ccc;
     padding: 20px;
-    outline: none;       
+    outline: none;
 }
 .form-groupe select{
     width: 100%;
@@ -302,13 +302,20 @@ header{
     width: 100%;
     border: 1px solid #ccc;
     padding: 5px 10px;
-    outline: none; 
+    outline: none;
 }
 .form-groupe input:focus{
     border-bottom: 1px solid #3498DB;
 }
 .form-groupe .form-save{
     background-color: #3498DB;
+    color: #fff;
+    font-size: 20px;
+    padding: 0px !important;
+    cursor: pointer;
+}
+.form-save-success{
+    background-color: #00b894;
     color: #fff;
     font-size: 20px;
     padding: 0px !important;
@@ -380,7 +387,7 @@ header{
 @media screen and (max-width : 768px){
     main{
         display: block;
-        background-color: #00B0FF; 
+        background-color: #00B0FF;
         position: relative;
     }
     .login{
@@ -393,7 +400,7 @@ header{
         padding: 10px;
     }
     .login h4{
-        color: #FFF;   
+        color: #FFF;
     }
     .form-group:last-of-type i{
         color: #00B0FF;
@@ -546,7 +553,7 @@ header{
     text-decoration: none;
     color: #fff;
 }
-.panel-container{ 
+.panel-container{
     overflow: hidden;
     padding: 20px;
 }
@@ -741,4 +748,59 @@ header{
 .user-avatar{
     width: 50px;
     height: 50px;
+}
+.show-user-avatar{
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto 28px;
+}
+.contact-footer{
+  background-color: #232323;
+}
+.contact-footer .container{
+  overflow: hidden;
+}
+.contact-footer .container .left{
+  float: left;
+  width: 40%;
+  padding: 20px
+}
+.contact-footer .container .left h4{
+  color: #b1aaaa;
+  font-size: 30px;
+  font-weight: normal;
+}
+.contact-footer .container .left address,
+.contact-footer .container .left p{
+  line-height: 1.4;
+  color: #b1aaaa;
+  margin-top: 20px;
+}
+.contact-footer .container .right{
+  float:left;
+  width: 60%;
+  padding: 20px
+}
+.contact-footer form{
+  max-width: 600px;
+  margin-top: 60px;
+}
+.contact-footer label{
+  color: #aba6a6;
+}
+.contact-footer .form-save-success{
+  border: none !important;
+}
+#map{
+  margin-top: 20px;
+  width: 100%;
+  height: 300px;
+}
+@media screen and (max-width:768px) {
+  .contact-footer .container .right,
+  .contact-footer .container .left{
+    width: 100%;
+    margin-top: 20px;
+  }
 }

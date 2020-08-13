@@ -4,8 +4,8 @@
     include 'init.php';
 
     $id = isset($_GET['id']) && is_numeric($_GET['id'])? $_GET['id']:0;
-    $stmt = $con->prepare('SELECT items.*,users.username,categories.name AS cats,categories.id AS catid FROM items 
-                            INNER JOIN users ON users.userid = items.userid 
+    $stmt = $con->prepare('SELECT items.*,users.username,categories.name AS cats,categories.id AS catid FROM items
+                            INNER JOIN users ON users.userid = items.userid
                             INNER JOIN categories ON categories.id = items.categoryid
                             WHERE approuve=1 AND itemid=?');
     $stmt->execute(array($id));
@@ -23,7 +23,7 @@
     <h1 class="edit-title"><?php echo $item->name?></h1>
     <div class="container item-container-f">
         <div class="image-info-item">
-            <img src="avatar.png" alt="avatar">
+            <img src="<?php echo !is_null($item->img) ? 'data/uploads/'.$item->img : "avatar.png" ;?>" alt="image">
         </div>
         <div class="item-info-f">
             <h2><?php echo $item->name ?></h2>
@@ -108,7 +108,7 @@
     </div>
     <!-- display all comment -->
     <div class="container">
-        <?php 
+        <?php
             $allComments = getComments("comments.*,users.username",$item->itemid,"status=1 AND itemid","INNER JOIN users ON users.userid = comments.userid");
             if(!empty($allComments)):
             foreach($allComments as $comment):
@@ -123,10 +123,10 @@
                     <div class="date"><time datetime="<?php echo $comment->date; ?>"><?php echo $comment->date; ?></time></div>
                 </div>
             </div>
-        <?php 
+        <?php
                 endforeach;
             else:
-                echo "<div class='alert alert-danger'>There Are No Comments To Show</div>";   
+                echo "<div class='alert alert-danger'>There Are No Comments To Show</div>";
         endif;
         ?>
     </div>

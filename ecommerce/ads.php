@@ -27,6 +27,7 @@
                 $countri     = filter_var($_POST['country'],FILTER_SANITIZE_STRING);
                 $tags        = filter_var($_POST['tags'],FILTER_SANITIZE_STRING);
                 $status      = filter_var($_POST['status'],FILTER_SANITIZE_NUMBER_INT);
+                $avatar =$_FILES['avatar'];
                 //validate The Form
                 $formErrors = array();
                 if(empty($name)){
@@ -47,14 +48,39 @@
                 if($status == 0){
                     array_push($formErrors,"You Must Select The Status Of The Item");
                 }
+                if(empty($avatar['name'])){
+                    array_push($formErrors,'<div class="alert alert-danger">Avatar Is Required</div>');
+                }
+
+            if(count($formErrors) == 0){
+                 //deal with the avatar
+                    $img_extension =  array('png','jpeg','jpg',"gif");
+                    $avatarExploded = explode('.',$avatar['name']);
+                    $avatarExtension = strtolower(array_pop($avatarExploded));
+
+                    if(in_array($avatarExtension,$img_extension)){
+                        if($avatar['size'] <= pow(2,22)){
+                            if($avatar['error'] == 0){
+                                $profilePic = uniqid($name ,true).".".$avatarExtension;
+                                move_uploaded_file($avatar['tmp_name'],'data/uploads/'.$profilePic);
+                            }else{
+                                array_push($formErrors,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
+                            }
+                        }else{
+                            array_push($formErrors,'<div class="alert alert-danger">Avatar Size Can Not Be Less Than 4MB</div>');
+                        }
+                    }else{
+                        array_push($formErrors,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
+                    }
+            }
                 if(count($formErrors) == 0){
                     //get user id
                     $stmt = $con->prepare('SELECT userid FROM users WHERE username =?');
                     $stmt->execute(array($_SESSION['user']));
                     $user =$stmt->fetch(PDO::FETCH_OBJ)->userid;
                     //insert item
-                    $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags) VALUES(?,?,?,?,?,?,?,?)");
-                    $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags));
+                    $stmt = $con->prepare("INSERT INTO items (name,description,price,country,status,categoryid,userid,tags,img) VALUES(?,?,?,?,?,?,?,?,?)");
+                    $stmt->execute(array($name,$description,$price,$countri,$status,$category,$user,$tags,$profilePic));
                     echo "<div class='alert alert-success'>Item Added</div>";
                 }else{
                     echo "<div class='container'>";
@@ -71,7 +97,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">Add New Ad</div>
             <div class="panel-body panel-float">
-            <form class="live-preview" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <form class="live-preview" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
                         <div class="form-groupe">
                             <label>Name:</label>
                             <input type="text" name="name" required>
@@ -84,6 +110,11 @@
                             <label>Price:</label>
                             <input type="text" name="price" required>
                         </div>
+                        <!-- start Profile Image field -->
+                        <div class="form-groupe">
+                            <label>Item Image : </label>
+                            <input type="file" name="avatar" required>
+                        </div>
                         <div class="form-groupe">
                             <label>Tags:</label>
                             <input type="text" name="tags" placeholder="Separate Tags With Comas">
@@ -94,7 +125,7 @@
                                 <option value="0">...</option>
                                 <?php foreach($categories as $category): ?>
                                     <option value="<?php echo $category->id; ?>"><?php echo $category->name; ?></option>
-                                    <?php 
+                                    <?php
                                         $stmt = $con->prepare("SELECT id,name from categories WHERE parent=$category->id");
                                         $stmt->execute();
                                         $subcategories  = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -124,7 +155,7 @@
                                 <option value="0">...</option>
                                 <?php foreach($status as $st => $value): ?>
                                     <option value="<?php echo $st ?>"><?php echo $value ?></option>
-                                <?php endforeach; ?> 
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-groupe">
@@ -133,7 +164,7 @@
                     </form>
                 <div class="card live-preview">
                     <div class="card-header">
-                        <img src="avatar.png" alt="image">
+                        <img src="<?php echo isset($profilePic) ? 'data/uploads/'.$profilePic : "avatar.png" ;?>" alt="image">
                             <div class="card-overlay"><span>price</span></div>
                     </div>
                     <div class="card-body">

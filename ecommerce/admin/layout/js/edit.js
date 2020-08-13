@@ -1,5 +1,5 @@
 //add astrisk on required fields
-var requiredFields = document.querySelectorAll('form input[required=""]');
+var requiredFields = document.querySelectorAll('form *[required]');
 
 for(required of requiredFields){
     var astrisk = document.createElement("span");
@@ -23,7 +23,7 @@ for(index = 0; index < inputs.length; index += 1){
   inputs[index].onblur = function(){
     this.setAttribute('placeholder',this.getAttribute('data-place'));
   }
-}   
+}
 
 //check for Number Input
 
