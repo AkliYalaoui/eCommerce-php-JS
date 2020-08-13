@@ -120,6 +120,7 @@
                         <div class="form-groupe">
                             <label>Avatar : </label>
                             <input type="file" name="avatar">
+                            <input type="hidden" name="oldAvatar" value="<?php echo $user->avatar;?>">
                         </div>
                         <div class="form-groupe">
                             <input type="submit" class="form-save" name="submit" value="Save">
@@ -167,7 +168,7 @@
                             if(in_array($avatarExtension,$img_extension)){
                                 if($avatar['size'] <= pow(2,22)){
                                     if($avatar['error'] == 0){
-                                        $profilePic = uniqid($name ,true).".".$avatarExtension;
+                                        $profilePic = uniqid($username ,true).".".$avatarExtension;
                                         move_uploaded_file($avatar['tmp_name'],'data/uploads/'.$profilePic);
                                     }else{
                                         array_push($formErrors,'<div class="alert alert-danger">Sorry...Something Went Wrong!</div>');
@@ -179,12 +180,18 @@
                                 array_push($formErrors,'<div class="alert alert-danger">Please,Upload The Right Image</div>');
                             }
                         }
+                        if($profilePic == ""){
+                            $profilePic = $_POST['oldAvatar'];
+                        }
                         if(count($formErrors) == 0){
+                            $id = $_SESSION['user_member']; 
                             $stmt = $con->prepare('SELECT * FROM users WHERE username=? AND userid != ?');
-                            $stmt->execute(array($username,$_SESSION['user_member']));
+                            $stmt->execute(array($username,$id));
                             if($stmt->rowCount() == 0){
                             $stmt = $con->prepare("UPDATE users SET username=?,password=?,email=?,fullname=?,avatar=? WHERE userid=?");
-                            $stmt->execute(array($username,$password,$email,$fullname,$profilePic,$_SESSION['user_member']));
+                            $stmt->execute(array($username,$password,$email,$fullname,$profilePic,$id));
+                            $_SESSION['user'] = $username;
+                            $_SESSION['avatar-user'] = $profilePic;
                             echo "<div class='alert alert-success'>Profile Updated</div>";
                             }else{
                                 echo "<div class='alert alert-danger'>Username Already Exists</div>";

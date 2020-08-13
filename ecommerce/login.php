@@ -22,9 +22,10 @@
                 $stmt = $con->prepare('SELECT * FROM users WHERE username=? AND password=?');
                 $stmt->execute(array($username,sha1($password)));
                 if($stmt->rowCount() > 0){
+                    $user = $stmt->fetch(PDO::FETCH_OBJ);
                     $_SESSION['user'] = $username;
-                    $_SESSION['avatar-user'] = $stmt->fetch(PDO::FETCH_OBJ)->avatar;
-                    $_SESSION['user_member'] = $stmt->fetch(PDO::FETCH_OBJ)->userid;
+                    $_SESSION['avatar-user'] = $user->avatar;
+                    $_SESSION['user_member'] = $user->userid;
                     header('Location:index.php');
                     exit();
                 }else{
